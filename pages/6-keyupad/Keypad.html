@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keypad</title>
+
+<audio id="bg-audio"
+  src="https://raw.githubusercontent.com/StealthyGundam/symmetrical-pancake/main/assets/SWING.m4a"
+  autoplay
+  loop>
+</audio>
+
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow: hidden;
+  user-select: none;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+#keypad-container {
+  position: relative;
+  width: 857px;
+  max-width: 100%;
+  aspect-ratio: 857 / 1297;
+}
+
+#keypad-base {
+  width: 100%;
+  display: block;
+}
+
+/* ===== OLED LINES ===== */
+.oled-line {
+  position: absolute;
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 700;
+  white-space: nowrap;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.oled-line img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: block;
+  z-index: 0;
+}
+
+.oled-line span {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+  line-height: 1;
+  padding: 5%;
+  margin: 0;
+  /* Glow effect for all lines */
+  text-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(255,255,255,0.25);
+}
+
+/* Scanlines for all lines (thinner) */
+.oled-line::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(rgba(255,255,255,0.05) 50%, transparent 50%);
+  background-size: 100% 2px; /* thinner scanlines */
+  pointer-events: none;
+}
+
+/* Flicker only for line 2 (double flicker) */
+@keyframes oledFlicker {
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.92; }
+  50% { opacity: 0.95; }
+  75% { opacity: 0.9; }
+}
+
+#oled2 span {
+  animation: oledFlicker 0.1s infinite alternate;
+}
+
+/* Flash effect for lines 2 & 4 */
+.flash {
+  animation: flashPulse 0.15s;
+}
+
+@keyframes flashPulse {
+  0% { opacity: 1; }
+  50% { opacity: 1.5; }
+  100% { opacity: 1; }
+}
+
+/* ===== LCD ===== */
+#lcd {
+  position: absolute;
+  left: 15.25%;
+  top: 30.2%;
+  width: 69.66%;
+  height: 11.54%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #00ff55;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  text-shadow: 0 0 2px rgba(0,255,85,0.6), 0 0 6px rgba(0,255,85,0.3);
+}
+
+#lcd span { 
+  width: 92%; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  transform-origin:center; 
+}
+
+.lcd-char { min-width:1ch; text-align:center; }
+
+/* ===== Keys ===== */
+.key { position:absolute; background:none; border:none; padding:0; cursor:pointer; }
+.key img { width:100%; height:100%; }
+
+</style>
+</head>
+
+<body>
+<div id="keypad-container">
+  <img id="keypad-base" src="assets/Keypad__BASE.png">
+
+  <!-- OLED Lines -->
+  <div class="oled-line" style="left:15.1%; top:4%; width:70%; height:6.2%;">
+    <img src="assets/Keypad__OLED LINE 1.png">
+    <span id="oled1"></span>
+  </div>
+
+  <div class="oled-line" style="left:15.1%; top:10.3%; width:70%; height:7.7%;">
+    <img src="assets/Keypad__OLED LINE 2.png">
+    <span id="oled2"></span>
+  </div>
+
+  <div class="oled-line" style="left:15.1%; top:18%; width:70%; height:3.9%;">
+    <img src="assets/Keypad__OLED LINE 3.png">
+    <span id="oled3"></span>
+  </div>
+
+  <div class="oled-line" style="left:15.1%; top:22%; width:70%; height:3.9%;">
+    <img src="assets/Keypad__OLED LINE 4.png">
+    <span id="oled4"></span>
+  </div>
+
+  <!-- LCD -->
+  <div id="lcd">
+    <span id="lcdText"></span>
+  </div>
+
+  <!-- Buttons -->
+  <button class="key" data-key="1" style="left:15.42%;top:45.52%;width:20.69%;height:7.28%;"><img src="assets/Keypad__1.png"></button>
+  <button class="key" data-key="2" style="left:39.63%;top:45.52%;width:20.69%;height:7.28%;"><img src="assets/Keypad__2.png"></button>
+  <button class="key" data-key="3" style="left:63.55%;top:45.52%;width:20.69%;height:7.28%;"><img src="assets/Keypad__3.png"></button>
+  <button class="key" data-key="4" style="left:15.42%;top:54.33%;width:20.69%;height:7.28%;"><img src="assets/Keypad__4.png"></button>
+  <button class="key" data-key="5" style="left:39.63%;top:54.33%;width:20.69%;height:7.28%;"><img src="assets/Keypad__5.png"></button>
+  <button class="key" data-key="6" style="left:63.55%;top:54.33%;width:20.69%;height:7.28%;"><img src="assets/Keypad__6.png"></button>
+  <button class="key" data-key="7" style="left:15.42%;top:63.28%;width:20.69%;height:7.28%;"><img src="assets/Keypad__7.png"></button>
+  <button class="key" data-key="8" style="left:39.63%;top:63.28%;width:20.69%;height:7.28%;"><img src="assets/Keypad__8.png"></button>
+  <button class="key" data-key="9" style="left:63.55%;top:63.28%;width:20.69%;height:7.28%;"><img src="assets/Keypad__9.png"></button>
+  <button class="key" data-key="CLR" style="left:15.42%;top:72.21%;width:20.69%;height:7.28%;"><img src="assets/Keypad__CLR.png"></button>
+  <button class="key" data-key="0" style="left:39.63%;top:72.21%;width:20.69%;height:7.28%;"><img src="assets/Keypad__0.png"></button>
+  <button class="key" data-key="ENT" style="left:63.55%;top:72.21%;width:20.69%;height:7.28%;"><img src="assets/Keypad__ENT.png"></button>
+
+</div>
+
+<script>
+const audio=document.getElementById("bg-audio");
+audio.play().catch(()=>{document.addEventListener("click",()=>audio.play(),{once:true});});
+document.body.addEventListener("click",()=>{if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});},{once:true});
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
+const PASSWORD="000000", MAX_LEN=6, LOCKOUT_DURATION=15;
+let input="", lockout=0, cipher=[], cipherCountdown=30;
+
+const o1=document.getElementById("oled1");
+const o2=document.getElementById("oled2");
+const o3=document.getElementById("oled3");
+const o4=document.getElementById("oled4");
+const lcdText=document.getElementById("lcdText");
+
+function generateCipher(){ cipher=[..."0123456789"].sort(()=>Math.random()-0.5); cipherCountdown=30; }
+function padZero(n){ return n<10?"0"+n:n; }
+
+// ===== Scaling function for OLED lines
+function scaleLineText(el){
+  const container = el.parentElement;
+  const span = el.querySelector("span");
+  if(!span) return;
+  const maxWidth = container.clientWidth - container.clientWidth*0.1; 
+  const maxHeight = container.clientHeight - container.clientHeight*0.1;
+  const text = span.textContent;
+  let fontSize = maxHeight;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.font = `${fontSize}px 'Share Tech Mono'`;
+  while(ctx.measureText(text).width > maxWidth && fontSize > 1){
+    fontSize -= 1;
+    ctx.font = `${fontSize}px 'Share Tech Mono'`;
+  }
+  span.style.fontSize = fontSize + "px";
+}
+
+// ===== Scaling for LCD
+function scaleLCD(){
+  const container = lcdText.parentElement;
+  const span = lcdText;
+  if(!span) return;
+  const maxWidth = container.clientWidth * 0.92;
+  const maxHeight = container.clientHeight;
+  const text = span.textContent;
+  let fontSize = maxHeight;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.font = `${fontSize}px 'Share Tech Mono'`;
+  while(ctx.measureText(text).width > maxWidth && fontSize > 1){
+    fontSize -= 1;
+    ctx.font = `${fontSize}px 'Share Tech Mono'`;
+  }
+  span.style.fontSize = fontSize + "px";
+}
+
+function flashLine(el){
+  const span = el.querySelector("span");
+  if(!span) return;
+  span.classList.add("flash");
+  setTimeout(()=>span.classList.remove("flash"),150);
+}
+
+function updateOLED(){
+  o1.innerHTML = `<span style="color: orange; text-shadow: 0 0 2px rgba(255,165,0,0.6),0 0 6px rgba(255,165,0,0.25)">DECIPHER YOUR ACCESS CODE</span>`;
+  o2.innerHTML = `<span style="color: yellow; text-shadow: 0 0 2px rgba(255,255,0,0.6),0 0 6px rgba(255,255,0,0.25)">${cipher.join("")}</span>`;
+  o3.innerHTML = `<span style="color: orange; text-shadow: 0 0 2px rgba(255,165,0,0.6),0 0 6px rgba(255,165,0,0.25)">CIPHER WILL CHANGE IN ${padZero(cipherCountdown)} SEC</span>`;
+  o4.innerHTML = `<span style="color: red; text-shadow: 0 0 3px rgba(255,0,0,0.7),0 0 8px rgba(255,0,0,0.3)">${lockout>0?`LOCKED OUT: ${padZero(lockout)} SEC`:""}</span>`;
+
+  scaleLineText(o1);
+  scaleLineText(o2);
+  scaleLineText(o3);
+  scaleLineText(o4);
+
+  if(cipherCountdown % 1 === 0) flashLine(o2); // flash cipher
+  if(lockout>0) flashLine(o4);                // flash lockout
+}
+
+function updateLCD(){
+  lcdText.textContent=Array.from({length:MAX_LEN},(_,i)=>i<input.length?"*":"-").join(" ");
+  scaleLCD();
+}
+
+generateCipher();
+updateOLED();
+updateLCD();
+
+setInterval(()=>{
+  if(lockout>0) lockout--;
+  cipherCountdown--;
+  if(cipherCountdown<=0) generateCipher();
+  updateOLED();
+},1000);
+
+document.querySelectorAll(".key").forEach(btn=>{
+  btn.onclick=()=>{
+    if(lockout>0)return;
+    const k=btn.dataset.key;
+    if(k==="CLR") input="";
+    else if(k==="ENT"){
+      const ciphered=input.split("").map(d=>cipher[d]).join("");
+      if(ciphered===PASSWORD){
+        document.body.innerHTML="<h1 style='color:#0f0;font-family:Share Tech Mono'>ACCESS GRANTED</h1>";
+        return;
+      }
+      input=""; lockout=LOCKOUT_DURATION;
+    } else if(input.length<MAX_LEN) input+=k;
+    updateLCD(); updateOLED();
+  }
+});
+
+window.addEventListener("resize",()=>{updateOLED(); updateLCD();});
+</script>
+
+</body>
+</html>
