@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Gundam Terminal</title>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Courier New", Courier, monospace;
+  background: #010;
+  color: #0f0;
+  line-height: 1.2;
+  user-select: none;
+  text-shadow: 0 0 2px #0f0, 0 0 4px #0f0;
+  font-size: 16px;
+}
+
+#terminal {
+  padding-top: 2ch;
+  width: 68ch;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+.terminal-line {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  animation: flicker 2s infinite alternate;
+}
+
+.no-wrap { white-space: pre; }
+.centered { text-align: center; animation: none; }
+
+.input-placeholder {
+  display: inline-block;
+  min-width: 2ch;
+  border-bottom: 1px solid #0f0;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+.input-placeholder.active {
+  border-bottom-color: #9f9;
+  text-shadow: 0 0 6px #9f9;
+}
+
+.input-placeholder.active::after {
+  content: "▉";
+  margin-left: 2px;
+  animation: blink 1s steps(1) infinite;
+}
+
+#message-block {
+  margin: 2ch;
+  animation: flicker 2s infinite alternate;
+}
+
+@keyframes flicker {
+  0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
+  20%,22%,24%,55% { opacity: 0.5; }
+}
+
+@keyframes blink {
+  0%,50% { opacity: 1; }
+  51%,100% { opacity: 0; }
+}
+
+#hidden-input {
+  position: fixed;
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+<div id="terminal"></div>
+<input id="hidden-input" autocomplete="off">
+
+<script>
+/* =======================
+   CRYPTO CONSTANTS
+======================= */
+const MOD = 47n;
+const PHI_MOD = MOD - 1n;
+
+const BASE_ALPHABET = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ ,.0123456789()[]$@!%"];
+const ENCRYPTION_KEY = 21n;
+const DECRYPTION_KEY = modInverse(ENCRYPTION_KEY, PHI_MOD);
+
+const CORRECT_KEYWORD = "SUNBLOCKER";
+
+const CIPHER_TEXT =
+  "7OGWYBG.YSVCA.GCIGSGJL.WB,7C!.GFS,VNGSGFYS,J7OMGI7M!,BGABS5B.GWY,C!MYGVSOMB,GA7WYGSG.)LG.J7)BGSOVGSGY7OWGCIGJ7.FY7BIGWYSWGFSWFYB.GLC!,GSWWBOW7COGP!.WGAYBOGLC!G)BS.WGB$4BFWG7WZG(OCAOGWCGUBGSGIS5C,7WBGSJCOMGWYC.BGAYCGS44,BF7SWBGSGVSOFBGCIG.!UW)BGFCOW,C)NGWY7.GBO7MJSW7FGUB7OMGJC5B.GA7WYGWYBGM,SFBGCIGSG4,BVSWC,GAYCG(OCA.GB$SFW)LGAYBOGWCG.W,7(BGSOVGAYBOGWCG)7OMB,GSG)7WW)BG)COMB,ZGSGW,!BG5SJ47,BNGYBGFS,,7B.GSOGSOF7BOWGY!OMB,GA,S44BVG7OG4)SLI!)GWBS.7OMNG7O57W7OMGLC!GWCGWB.WGLC!,GA7W.GSMS7O.WGY7.GF!OO7OMZGWYB,B’.G.CJBWY7OMGSUC!WGWYBGASLGYBGC4B,SWB.GWYSWGJS(B.GB5B,LG7OWB,SFW7COGIBB)G)7(BGSGMSJBGCIGFSWGSOVGJC!.BNGAYB,BGYBGS)ASL.G.BBJ.GWCGUBGCOBG.WB4GSYBSVZGYBG)7(B.GWCG.S5C,GWYBGFYS.BNGVB)7MYW7OMG7OGWYBGR!7BWGJCJBOW.GUBIC,BGWYBGI7OS)GJC5BZGWYBG57FWC,7B.GYBGF)S7J.GS,BGS))GWYBGJC,BGWS.WLGIC,GWYB7,G4SW7BOFBNGSOVG7IGLC!G)CC(GF)C.B)LNGB5BOGWYBGW7O7B.WG,CVBOW.G.F!,,L7OMGOBS,ULG.BBJGFS!MYWG!4G7OGWYBGS))!,BGCIGWYBGO7MYWGSOVGY7JZ";
+
+/* =======================
+   TERMINAL STATE
+======================= */
+const terminal = document.getElementById("terminal");
+const hiddenInput = document.getElementById("hidden-input");
+
+let activeField = null;
+let locked = false;
+
+/* =======================
+   MATH
+======================= */
+function modInverse(a, m) {
+  let m0 = m, x0 = 0n, x1 = 1n;
+  a = ((a % m) + m) % m;
+
+  while (a > 1n) {
+    const q = a / m;
+    [a, m] = [m, a % m];
+    [x0, x1] = [x1 - q * x0, x0];
+  }
+  return x1 < 0n ? x1 + m0 : x1;
+}
+
+/* =======================
+   CIPHER
+======================= */
+function decryptChar(char, cipherAlphabet, key) {
+  const idx = cipherAlphabet.indexOf(char);
+  if (idx === -1) return char;
+  return BASE_ALPHABET[Number((BigInt(idx) ** key) % MOD)];
+}
+
+/* =======================
+   RENDERING
+======================= */
+function renderMessage(text) {
+  let block = document.getElementById("message-block");
+  if (!block) {
+    block = document.createElement("div");
+    block.id = "message-block";
+    block.className = "terminal-line";
+    terminal.appendChild(block);
+  }
+  block.textContent = text;
+}
+
+/* =======================
+   FINAL ANSWER FIELD
+======================= */
+function renderFinalAnswerField() {
+  if (document.getElementById("final-answer-block")) return;
+
+  const block = document.createElement("div");
+  block.id = "final-answer-block";
+  block.className = "terminal-line";
+  block.style.marginTop = "2ch";
+  block.textContent = "> Final Answer: ";
+
+  const s = document.createElement("span");
+  s.id = "final-answer";
+  s.className = "input-placeholder";
+  s.textContent = "■■■■■■■■■■";
+
+  s.onclick = () => {
+    document.querySelectorAll(".input-placeholder").forEach(el => el.classList.remove("active"));
+    s.classList.add("active");
+    activeField = s;
+
+    // Clear placeholder when clicked
+    if (s.textContent === "■■■■■■■■■■") s.textContent = "";
+
+    hiddenInput.value = "";
+    hiddenInput.focus();
+  };
+
+  // Restore placeholder if empty on blur
+  s.onblur = () => {
+    if (s.textContent.trim() === "") s.textContent = "■■■■■■■■■■";
+  };
+
+  block.appendChild(s);
+  terminal.appendChild(block);
+}
+
+/* =======================
+   UPDATE
+======================= */
+function update() {
+  const keyEl = document.getElementById("user-key");
+  const kwEl = document.getElementById("user-keyword");
+  if (!keyEl || !kwEl) return;
+
+  const key = BigInt(keyEl.textContent.trim() || "0");
+  const keyword = kwEl.textContent.trim().toUpperCase();
+
+  const seen = new Set();
+  const keyChars = [...keyword].filter(c =>
+    BASE_ALPHABET.includes(c) && !seen.has(c) && seen.add(c)
+  );
+
+  const cipherAlphabet = [
+    ...keyChars,
+    ...BASE_ALPHABET.filter(c => !keyChars.includes(c))
+  ];
+
+  let output = "";
+  for (const c of CIPHER_TEXT) {
+    output += decryptChar(c, cipherAlphabet, key);
+  }
+
+  renderMessage(output);
+
+  if (!locked && key === DECRYPTION_KEY && keyword === CORRECT_KEYWORD) {
+    lockInputs();
+    renderFinalAnswerField(); // Final answer appears after solving
+  }
+}
+
+function lockInputs() {
+  locked = true;
+  document.querySelectorAll(".input-placeholder").forEach(span => {
+    if (span.id !== "final-answer") {
+      span.classList.remove("active");
+      span.onclick = null;
+      span.style.cursor = "default";
+    }
+  });
+  hiddenInput.blur();
+}
+
+/* =======================
+   INPUT HANDLING
+======================= */
+hiddenInput.addEventListener("input", () => {
+  if (!activeField || (locked && activeField.id !== "final-answer")) return;
+
+  if (activeField.id === "user-key") {
+    hiddenInput.value = hiddenInput.value.replace(/\D+/g, "");
+  } else {
+    hiddenInput.value = hiddenInput.value
+      .toUpperCase()
+      .replace(/[^A-Z ,\.]/g, "");
+  }
+
+  activeField.textContent = hiddenInput.value;
+  update();
+
+  // Check final answer
+  if (activeField.id === "final-answer") {
+    if (hiddenInput.value.trim().toUpperCase() === "ASTARION") {
+      window.location.href = "https://www.cardmarket.com/en/Magic/Cards/Astarion-the-Decadent/Versions";
+    }
+  }
+});
+
+function activateField(span, type) {
+  if (locked && span.id !== "final-answer") return;
+
+  document.querySelectorAll(".input-placeholder").forEach(el => el.classList.remove("active"));
+
+  span.classList.add("active");
+  activeField = span;
+
+  hiddenInput.type = type === "key" ? "tel" : "text";
+  hiddenInput.value = "";
+  span.textContent = "";
+  hiddenInput.focus();
+}
+
+/* =======================
+   FONT SCALING
+======================= */
+function scaleFont() {
+  const chars = 68;
+  const baseFont = 16;
+
+  requestAnimationFrame(() => {
+    const temp = document.createElement("span");
+    temp.textContent = "=".repeat(chars);
+    temp.style.visibility = "hidden";
+    temp.style.position = "absolute";
+    temp.style.whiteSpace = "pre";
+    terminal.appendChild(temp);
+
+    const required = temp.getBoundingClientRect().width;
+    terminal.removeChild(temp);
+
+    const scale = required > innerWidth ? innerWidth / required : 1;
+    terminal.style.fontSize = (baseFont * scale) + "px";
+  });
+}
+
+/* =======================
+   BOOT SEQUENCE
+======================= */
+async function runBoot() {
+  const bootLines = [
+    "PROJECT SUNDIAL UNIFIED OPERATING SYSTEM",
+    "COPYRIGHT 2026 GUNDAM INDUSTRIES",
+    "-Trespasser Management System-",
+    "====================================================================",
+    "| Administrator Log",
+    "| >> Encryption Key: ■■■",
+    "| >> Keyword: ■■■■■■■■■■",
+    "> run:// calcs E:\\message.txt /P everyone:f",
+    "> -encrypt message.txt",
+    "====================================================================",
+    "| User Log",
+    "| >> Decryption Key: ■■■",
+    "| >> Keyword: ■■■■■■■■■■",
+    "====================================================================",
+    "> Log: Please enter correct decryption key and keyword for access..."
+  ];
+
+  for (let i = 0; i < 3; i++) {
+    const s = document.createElement("span");
+    s.className = "terminal-line centered";
+    s.textContent = bootLines[i];
+    terminal.appendChild(s);
+  }
+
+  scaleFont();
+
+  for (let i = 3; i < bootLines.length; i++) {
+    await new Promise(resolve => {
+      const s = document.createElement("span");
+      s.className = "terminal-line";
+
+      if (/^=+$/.test(bootLines[i]) || bootLines[i].startsWith("> Log:")) {
+        s.classList.add("no-wrap");
+      }
+
+      terminal.appendChild(s);
+
+      let j = 0;
+      const t = setInterval(() => {
+        s.textContent += bootLines[i][j++];
+        if (j >= bootLines[i].length) {
+          clearInterval(t);
+          resolve();
+        }
+      }, 25);
+    });
+  }
+
+  enableInputs();
+}
+
+function enableInputs() {
+  const lines = terminal.querySelectorAll(".terminal-line");
+  let active = false;
+
+  lines.forEach(line => {
+    if (line.textContent.includes("| User Log")) active = true;
+    if (!active) return;
+
+    if (line.textContent.includes("| >> Decryption Key:")) {
+      line.textContent = "| >> Decryption Key: ";
+      const s = document.createElement("span");
+      s.id = "user-key";
+      s.className = "input-placeholder";
+      s.textContent = "1942";
+      s.onclick = () => activateField(s, "key");
+      line.appendChild(s);
+    }
+
+    if (line.textContent.includes("| >> Keyword:")) {
+      line.textContent = "| >> Keyword: ";
+      const s = document.createElement("span");
+      s.id = "user-keyword";
+      s.className = "input-placeholder";
+      s.textContent = "BAMBOOZLE SWIPE";
+      s.onclick = () => activateField(s, "keyword");
+      line.appendChild(s);
+    }
+  });
+
+  update();
+}
+
+runBoot();
+window.addEventListener("resize", scaleFont);
+</script>
+</body>
+</html>
