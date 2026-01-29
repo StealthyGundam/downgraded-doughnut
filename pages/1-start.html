@@ -124,6 +124,169 @@ function goFullscreen() {
 document.addEventListener('click', goFullscreen);
 
 // Target page URL
+const targetURL = "2-access-code.html";
+window.location.href = targetURL;
+
+
+// Refuse button: close tab or redirect to blank
+document.getElementById("refuse-btn").addEventListener("click", () => {
+  localStorage.setItem("refused", "true");
+  const win = window.open('','_self');
+  win.close();
+  setTimeout(()=>window.location.href="about:blank",100);
+});
+
+// Accept button: fullscreen + load iframe
+document.getElementById("accept-btn").addEventListener("click", async () => {
+  window.location.href = targetURL;
+  // Request fullscreen
+  const elem = document.documentElement;
+  try {
+    if (elem.requestFullscreen) await elem.requestFullscreen();
+    else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
+    else if (elem.msRequestFullscreen) await elem.msRequestFullscreen();
+  } catch(e){
+    console.warn("Fullscreen request failed:", e);
+  }
+
+  // Hide overlay
+  document.getElementById("rules-overlay").style.display = "none";
+
+  // Load iframe with target page
+  const iframe = document.getElementById("iframe-container");
+  iframe.src = targetURL;
+  iframe.style.display = "block";
+});
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Rules Page</title>
+<style>
+
+  * {
+  -webkit-user-select: none;   /* iOS Safari */
+  -webkit-touch-callout: none; /* iOS long-press menu */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  background: rgb(17, 17, 17);
+  color: rgb(190, 190, 190);
+  font-family: monospace;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  gap: 20px;
+  padding-top: 0px;
+}
+.image-container img {
+    max-width: 30%;
+    height: auto;
+    object-fit: contain;
+}
+#rules-overlay {
+  background: rgba(0,0,0,0.95);
+  padding: 2rem;
+  border: 1px solid #0f0;
+  max-width: 600px;
+  text-align: left;
+  position: absolute;
+}
+#rules-overlay h2 { text-align: center; margin-bottom: 1rem; }
+#rules-overlay ol { margin-bottom: 2rem; }
+
+#rules-overlay button-accept {
+  background: #010; color: #0f0; border: 1px solid #0f0;
+  padding: 0.5rem 1rem; margin: 0 1rem; cursor: pointer;
+  font-family: monospace; font-size: 1rem;}
+
+#rules-overlay button-refuse {
+  background: #010; color: rgb(255, 0, 0); border: 1px solid rgb(255, 0, 0);
+  padding: 0.5rem 1rem; margin: 0 1rem; cursor: pointer;
+  font-family: monospace; font-size: 1rem;}
+
+#rules-overlay button-accept:hover { background: #0f0; color: #010; }
+#rules-overlay button-refuse:hover { background: rgb(255, 0, 0); color: #010; }
+#button-row { text-align: center; }
+#iframe-container {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none; 
+}
+</style>
+</head>
+
+
+
+<body>
+
+<div id="rules-overlay">
+  <h2>Project Sundial Access Rules</h2>
+  <div class="image-container">
+  <img src="https://raw.githubusercontent.com/StealthyGundam/symmetrical-pancake/4ad25f83f1b9c58f77b42e014656bd68c515e425/assets/Enclave.png" alt="Image 1">
+  <img src="https://raw.githubusercontent.com/StealthyGundam/symmetrical-pancake/4ad25f83f1b9c58f77b42e014656bd68c515e425/assets/11.png" alt="Image 2"> 
+  <img src="https://raw.githubusercontent.com/StealthyGundam/symmetrical-pancake/4ad25f83f1b9c58f77b42e014656bd68c515e425/assets/Enclave.png" alt="Image 3">
+</div>
+  <p>Congratulations on reaching this point. Your progress indicates a level of curiosity and initiative that may be required to continue. To proceed, you must review and accept the following terms:</p>
+  <ol>
+    <li>All information, materials, and experiences encountered during this process must remain strictly confidential. Under no circumstances may they be shared, transmitted, or disclosed to any other individual.</li>
+    <li>You may use a large language model or other generative pre-trained transformer as an aid. You acknowledge that such tools are not guaranteed to be accurate, complete, or reliable, and their outputs must be evaluated critically.</li>
+    <li>All tasks must be completed independently. You are expected to observe, research, analyze, and interpret information using your own judgment. Challenges may vary in difficulty, with some designed to test persistence and problem-solving ability.</li>
+    <li>There is no fixed endpoint. The experience concludes only when you disengage or when no further actions remain. Recognition of completion will require no explanation.</li>
+  </ol>
+  <p>By selecting “Accept”, you confirm that you have read, understood, and agree to all terms stated above. If you do not agree, select “Refuse” to exit immediately.</p><br>
+  <div id="button-row">
+    <button-refuse id="refuse-btn">Refuse</button-refuse>
+    <button-accept id="accept-btn">Accept</button-accept>
+  </div>
+</div>
+
+<!-- Iframe to load target page -->
+<iframe id="iframe-container"></iframe>
+
+<script>
+
+if (localStorage.getItem("refused") === "true") {
+  const win = window.open("", "_self");
+  win.close();
+
+  setTimeout(() => {
+    window.location.href = "about:blank";
+  }, 0);
+}
+
+const el = document.documentElement;
+
+function goFullscreen() {
+  if (el.requestFullscreen) el.requestFullscreen();
+  document.removeEventListener('click', goFullscreen);
+}
+
+document.addEventListener('click', goFullscreen);
+
+// Target page URL
 const targetURL = "2-character-creation.html";
 window.location.href = targetURL;
 
@@ -160,3 +323,4 @@ document.getElementById("accept-btn").addEventListener("click", async () => {
 
 </body>
 </html>
+
