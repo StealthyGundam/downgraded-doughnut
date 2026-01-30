@@ -122,9 +122,10 @@
    }
 
    #answers label:hover {
-       background: #f0f0f0;
+       background: #29292959;
    }
 
    #answers input[type="radio"] {
        margin-right: 0.5rem;
    }
+
