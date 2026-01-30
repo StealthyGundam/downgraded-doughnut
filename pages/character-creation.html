@@ -4,221 +4,16 @@
 <meta charset="UTF-8" />
 <title>Character Creation</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../css/main.css">
 <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
 
 <style>
-body {
-  font-family: 'Compacta', sans-serif;
-  font-size: 16px;
-    color: #eee;
-  text-align: center;
-  background: #000000;
-  background-image: url("https://cdn.prod.website-files.com/5ff36780a108495c598ce192/61a217dea2db7e386256437f_bg-dots.svg");
-  background-size: .5rem;
-  background-repeat: repeat; /* default */
-
-}
-h1 {
-  margin-top: 20px;
-  text-align: center;
-  font-family: 'Franklin Gothic Condensed', sans-serif;
-  font-size: clamp(30px, 8vw, 70px);
-  color: #ffffff;
-  white-space: nowrap;
-  text-shadow:
-    0 0 10px #00ffff,
-    0 0 20px #006cff,
-    0 0 30px #8d00ff,
-    0 0 40px #ff00f5;
-}
-h2 {
-font-family: 'Franklin Gothic Condensed', sans-serif;
-text-align: center;
-margin: 0;
-color: #ffffff;
-font-size: 30px;
-text-shadow:
-0 0 2px #00ffff,
-0 0 4px #006cffff,
-0 0 6px #576dc9ff,
-0 0 8px #ff00f5ff;}
-
-#rollDiceBtn {
-  display: block;      /* allows margin auto to work */
-  margin: 20px auto;   /* centers the button horizontally */
-  font-size: 16px;
-  cursor: pointer;
-}
-section {
-margin:30px auto;
-padding:10px;
-border-radius:20px;
-width: 100%;
-max-width: 410px;
-background:#131212;
-background-image: url("https://cdn.prod.website-files.com/5ff36780a108495c598ce192/647865e3c7b7fd5334b11c92_Background%20Lines.svg");
-background-position: 100% 0;
-background-position-x: 100%;
-background-position-y: 0px;
-background-repeat: no-repeat;
-background-size: 80%;
-box-shadow:
-           0 0 2px #ffffff,
-           0 0 6px #00ffff,
-           0 0 9px #4e83ff,
-           0 0 12px #a58cff,
-    inset -0 -0 2px #ffffff,
-    inset -0 -0 6px #00ffff,
-    inset -0 -0 9px #4e83ff,
-    inset -0 -0 12px #a58cff;
-
-
-         
-text-align:left; }
-
-button { margin:5px auto; padding:5px 15px; font-size: 24px; cursor:pointer; background:#333; color:#eee; border:none; border-radius:5px; }
-button:hover { background:#555; }
-#startQuestBtn {
-  display: block; /* 🔑 THIS IS THE FIX */
-  font-family: 'Franklin Gothic Condensed', sans-serif;
-  text-align: center;
-  margin: 20px auto;
-  font-size: 30px;
-  padding: 4px 15px;
-  cursor: pointer;
-  background: #333;
-  color: #eee;
-  border: none;
-  border-radius: 5px;
-  text-shadow:
-    0 0 2px #00ffff,
-    0 0 4px #006cffff,
-    0 0 6px #576dc9ff,
-    0 0 8px #ff00f5ff;
-}
-
-input, select { padding:5px; margin-top:5px; border-radius:5px; border:1px solid #555; background:#111; color:#eee; width:100%; box-sizing:border-box; }
-input[disabled], select[disabled] { background:#222; color:#888; }
-
-* {box-sizing: border-box;}
-
+/*===============================================================================*/
 .dice-container { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:10px; }
 .dice-wrapper { position:relative; width:150px; height:150px; cursor:pointer; border-radius:10px; border:2px solid transparent; }
 .dice-number-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:60px; font-weight:bold; color:#fff; pointer-events:none;-webkit-text-stroke: 4px rgb(0, 0, 0); paint-order: stroke fill;}
 /*===============================================================================*/
 
-
-
-input, select {
-  font-size: 0.8rem;
-  padding: 6px;
-  margin-top: 5px;
-  border-radius: 5px;
-  border: 1px solid #555;
-  background: #111;
-  color: #eee;
-  width: 100%;
-  box-sizing: border-box;
-}
-/*===============================================================================*/
-/* Cloudflare-style fake captcha */
-.cf-captcha {
-  margin-top: 5px;
-  background: linear-gradient(#2a2a2a, #1e1e1e);
-  border: 1px solid #f68626ff;
-  border-radius: 4px;
-  padding: 14px;
-}
-
-.cf-box {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.cf-box input {
-  display: none;
-}
-
-.cf-check {
-  width: 22px;
-  height: 22px;
-  border: 2px solid #aaa;
-  background: #111;
-  border-radius: 3px;
-  position: relative;
-}
-.cf-box input:checked + .cf-check::after {content: "";position: absolute;left: 5px;top: 1px;width: 6px;height: 12px;border: solid #fff;border-width: 0 2px 2px 0; transform: rotate(45deg);}
-.cf-text {flex-grow: 1;font-size: 15px;color: #eee;}
-.cf-brand { text-align: right; font-size: 11px; color: #bbb;}
-.cf-brand img {height: 18px;display: block; margin-left: auto; margin-bottom: 2px;filter: brightness(0.9);}
-.cf-links a {color: #bbb;text-decoration: none;}
-.cf-links a:hover {text-decoration: underline;}
-/*===============================================================================*/
-/* Section 2: Perks */
-#skillsContainer button {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  font-size: 24px;
-  line-height: 40px;     /* centers text vertically */
-  text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stroke {font-weight: bold;-webkit-text-stroke: 3px rgb(0, 0, 0); paint-order: stroke fill;}
-#perksContainer table {width: 100%;border-collapse: collapse;}
-#perksContainer tr {border-bottom: 1px solid #444;}
-#perksContainer td {padding: 0px 4px;vertical-align: left;}
-#perksContainer td.checkbox-cell {width: 20;text-align: left;}
-/* ===============================
-   Neon RPG Checkbox Style
-================================ */
-
-#perksContainer input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 5px;
-  border: 2px solid #006cffff;
-  background: #131212;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.8);
-}
-#perksContainer input[type="checkbox"]:hover {box-shadow:0 0 6px rgb(255, 255, 255),inset 0 0 6px rgba(0,0,0,0.8);}
-/* Checked state */
-#perksContainer input[type="checkbox"]:checked {background: radial-gradient(circle at center, rgba(0, 0, 0, 0.523), #191d9461);border-color: #9db4ff;
-  box-shadow:
-    0 0 6px rgb(0, 55, 255),
-    0 0 18px #6a99ff;}
-/* Checkmark */
-#perksContainer input[type="checkbox"]:checked::after {content: "";position: absolute;top: 50%;left: 50%;transform: translate(-50%, -58%);color: #ffffff;font-size: 16px;font-weight: bold;text-shadow: 0 0 4px #fff;}
-/* Disabled */
-#perksContainer input[type="checkbox"]:disabled {opacity: 0.4;cursor: not-allowed; box-shadow: none;}
-#perksContainer input[type="checkbox"]:checked {animation: perkPulse .5s ease-out;}
-@keyframes perkPulse {0% { transform: scale(0.1); } 100% { transform: scale(1); }}
-
-#perksContainer .perk-name {font-size: 20px; color: #5280f8ff; }
-#perksContainer .perk-desc {font-size: 12px;color: #af7ff7ff;margin-top: 1px;}
-.perk-efec  {font-size: 10px; margin-top: 1px;margin-bottom: 2px;}
-.perk-plus  {color: #00c853;}
-.perk-minus {color: #d50000;}
-
-.skill-name {font-size: 20px;color: #5280f8ff;}
-.skill-desc {font-size: 12px;color: #af7ff7ff;margin-top: 1px;}
-.skill-value{font-size: 24px;}
-.skill-boosted { color: #00c853; /* green */}
-.skill-penalized { color: #d50000; /* red */}
-
-
-/*===============================================================================*/
 </style>
 </head>
 <body>
@@ -960,6 +755,7 @@ kvexport();
 
 </body>
 </html>
+
 
 
 
