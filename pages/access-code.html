@@ -146,11 +146,12 @@
     </div>
 
     <script>
+        const TARGET_URL = "character-creation.html";
         // Auto-redirect if access code already exists
         const savedCode = localStorage.getItem("accessCode");
         if (savedCode) {
             // Redirect immediately
-            window.location.href = "https://stealthygundam.github.io/super-duper-journey/";
+            window.location.href = TARGET_URL;
         }
 
 
@@ -193,7 +194,7 @@
 
 
         function continueToNext() {
-            window.location.href = "https://stealthygundam.github.io/super-duper-journey/";
+            window.location.href = TARGET_URL;
         }
 
 
@@ -251,3 +252,4 @@
 </body>
 
 </html>
+
