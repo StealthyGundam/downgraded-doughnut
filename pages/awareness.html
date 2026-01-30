@@ -14,7 +14,6 @@
   width: 100%;
   max-width: 410px;
   aspect-ratio: 1170 / 1690;
-
   background-image: url("../assets/pokemon/Main.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -24,49 +23,22 @@
 
 .hit {
   position: absolute;
-  background: rgba(0, 255, 0, 0); /* fully transparent */
   cursor: pointer;
 }
 
-/* Example pixel-based placement */
-
-.bellsprout {
-  left: 42.74%;
-  top: 34.91%;
-  width: 7.69%;
-  height: 7.99%;
+/* Debug outline for testing */
+.hit.debug {
+  outline: 2px solid lime;
+  outline-offset: -2px;
+  background: rgba(0, 255, 0, 0.1); /* optional semi-transparent fill */
 }
 
-.diglett {
-  left: 9.23%;
-  top: 40.53%;
-  width: 5.98%;
-  height: 4.14%;
-}
-
-.gloom {
-  left: 14.10%;
-  top: 76.92%;
-  width: 10.26%;
-  height: 5.92%;
-}
-
-.mewtwo {
-  left: 0%;
-  top: 10.53%;
-  width: 9.40%;
-  height: 12.72%;
-}
-
-.seadra {
-  left: 72.65%;
-  top: 19.23%;
-  width: 11.11%;
-  height: 8.28%;
-}
-
-
-
+/* Hitboxes in percentages for scaling */
+.bellsprout { left: 42.74%; top: 34.91%; width: 7.69%; height: 7.99%; }
+.diglett    { left: 9.23%;  top: 40.53%; width: 5.98%; height: 4.14%; }
+.gloom      { left: 14.10%; top: 76.92%; width: 10.26%; height: 5.92%; }
+.mewtwo     { left: 0%;     top: 10.53%; width: 9.40%; height: 12.72%; }
+.seadra     { left: 72.65%; top: 19.23%; width: 11.11%; height: 8.28%; }
 
 </style>
 </head>
@@ -76,13 +48,37 @@
 <section>
   <h3>Find The Pokemon In Order</h3>
   <p>Bellsprout, Diglett, Gloom, Mewtwo, Seadra</p>
-  <div id="Background"></div> 
+  <div id="Background">
+    <div class="hit bellsprout debug" data-name="Bellsprout"></div>
+    <div class="hit diglett debug" data-name="Diglett"></div>
+    <div class="hit gloom debug" data-name="Gloom"></div>
+    <div class="hit mewtwo debug" data-name="Mewtwo"></div>
+    <div class="hit seadra debug" data-name="Seadra"></div>
+  </div>
 </section>
+<script>
+const order = ["Bellsprout", "Diglett", "Gloom", "Mewtwo", "Seadra"];
+let current = 0;
+
+document.querySelectorAll(".hit").forEach(hit => {
+  hit.addEventListener("click", () => {
+    const name = hit.dataset.name;
+
+    if (name === order[current]) {
+      alert(`${name} found!`);
+      current++;
+      hit.style.pointerEvents = "none"; // disable once found
+    } else {
+      alert("Wrong Pokémon");
+    }
+  });
+});
 
 </script>
 </main>
 </body>
 </html>
+
 
 
 
