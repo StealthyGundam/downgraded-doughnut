@@ -858,7 +858,7 @@ document.addEventListener("spa-page-loaded", () => {
   if (localStorage.getItem("characterLocked") !== "true") return;
 
   restoreLockedCharacter();
-}, { once: true });
+});
 
 
   /* ---------------------------
@@ -918,6 +918,7 @@ function kvexport() {
   .catch(console.error);
 }
 </script>
+
 
 
 
