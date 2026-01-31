@@ -854,17 +854,22 @@ function showError(msg) {
   errorBox.style.display = "block";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("spa-page-loaded", () => {
   if (localStorage.getItem("characterLocked") !== "true") return;
+
+  restoreLockedCharacter();
+}, { once: true });
+
 
   /* ---------------------------
      RESTORE SAVED VALUES
   ----------------------------*/
 
+ function restoreLockedCharacter() {
   // Identity
-  charName.value   = localStorage.getItem("charName") || "";
+  charName.value = localStorage.getItem("charName") || "";
   raceSelect.value = localStorage.getItem("race") || "";
-  classSelect.value= localStorage.getItem("class") || "";
+  classSelect.value = localStorage.getItem("class") || "";
 
   // Dice
   diceRolls = JSON.parse(localStorage.getItem("diceRolls")) || [];
@@ -873,20 +878,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Skills & perks
   baseSkillValues = JSON.parse(localStorage.getItem("baseSkillValues")) || baseSkillValues;
-  skillValues     = JSON.parse(localStorage.getItem("skillValues")) || skillValues;
-  selectedPerk    = localStorage.getItem("selectedPerk");
+  skillValues = JSON.parse(localStorage.getItem("skillValues")) || skillValues;
+  selectedPerk = localStorage.getItem("selectedPerk");
 
-  // Force zero points
+  // Lock skill points
   skillPoints = 0;
   localStorage.setItem("skillPoints", "0");
 
-  // Reapply perk math
+  // Reapply perks
   if (selectedPerk) {
     const p = perkData.find(x => x.name === selectedPerk);
     if (p) applyPerk(p);
   }
 
   updateUI();
+
+  // Lock controls
+  document.querySelectorAll("input, select").forEach(el => el.disabled = true);
+  document.querySelectorAll("#skillsContainer button").forEach(b => b.disabled = true);
+  document.querySelectorAll("#perksContainer input[type='checkbox']").forEach(cb => cb.disabled = true);
+  document.querySelectorAll(".dice-wrapper").forEach(d => d.style.pointerEvents = "none");
+
+  startBtn.disabled = false;
+}
+
 
   /* ---------------------------
      HARD LOCK ALL CONTROLS
@@ -946,6 +961,7 @@ kvexport();
   
  
 </script>
+
 
 
 
