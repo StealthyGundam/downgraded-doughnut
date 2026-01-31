@@ -854,11 +854,6 @@ function showError(msg) {
   errorBox.style.display = "block";
 }
 
-document.addEventListener("spa-page-loaded", () => {
-  if (localStorage.getItem("characterLocked") !== "true") return;
-
-  restoreLockedCharacter();
-});
 
 
   /* ---------------------------
@@ -917,7 +912,15 @@ function kvexport() {
   .then(() => console.log("Sent to KV"))
   .catch(console.error);
 }
+
+  document.addEventListener("spa-page-loaded", () => {
+  if (localStorage.getItem("characterLocked") !== "true") return;
+
+  restoreLockedCharacter();
+});
+
 </script>
+
 
 
 
