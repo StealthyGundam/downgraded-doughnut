@@ -32,20 +32,25 @@
 }
   
 #continueBtn {
-  margin-top: 16px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 6px;
-  border: none;
-  color: #fff;
-  cursor: not-allowed;
-  background: #c0392b; /* red */
-  transition: background 0.3s ease;
-}
+       font-family: 'Franklin Gothic Condensed', sans-serif;
+       text-align: center;
+       margin: 20px auto;
+       font-size: 30px;
+       padding: 4px 15px;
+       cursor: pointer;
+       background: c80000;
+       color: #eee;
+       border: none;
+       border-radius: 5px;
+       text-shadow:
+           0 0 2px #00ffff,
+           0 0 4px #006cffff,
+           0 0 6px #576dc9ff,
+           0 0 8px #ff00f5ff;
+   }
 
 #continueBtn.enabled {
-  background: #27ae60; /* green */
+  background: #00c853;
   cursor: pointer;
 }
 
@@ -126,6 +131,7 @@ continueBtn.addEventListener("click", () => {
 </main>
 </body>
 </html>
+
 
 
 
