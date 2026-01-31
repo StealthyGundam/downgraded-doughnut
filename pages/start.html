@@ -6,11 +6,19 @@
   <title>Rules Page</title>
 
   <style>
-    * {
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none;
-    }
+      * {
+       box-sizing: border-box;
+       user-select: none;
+       -webkit-user-select: none;
+       -ms-user-select: none;
+       -webkit-touch-callout: none;
+   }
+
+   input,
+   textarea,
+   select {
+       font-size: 16px;
+   }
 
     html,
     body {
@@ -121,7 +129,7 @@
     </div>
   </div>
   
-  <script src="common.js" defer></script>
+  <script src="../js/common.js" defer></script>
   <script>
     const TARGET_URL = "access-code.html";
   
@@ -140,6 +148,7 @@
 </body>
 
 </html>
+
 
 
 
