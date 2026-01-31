@@ -44,17 +44,53 @@ const questions = [
 
 const correctIQAnswers = {q9:"A",q10:"C",q11:"B",q12:"C",q13:"C",q14:"B",q15:"D",q16:"B",q17:"C",q18:"D"};
 
+// RESULTS
+function showResults(){
+  document.getElementById("quiz").style.display="none";
+  const r=document.getElementById("results");
+  r.style.display="block";
+
+  const personalityIDs = ["q1","q2","q3","q4","q5","q6","q7","q8"];
+  const iqIDs = ["q9","q10","q11","q12","q13","q14","q15","q16","q17","q18"];
+
+  let sum=0;
+  personalityIDs.forEach(qid=>{ sum += parseInt(answers[qid]||3); });
+  let avg=sum/personalityIDs.length;
+  let opennessPercent=((avg-1)/4*100).toFixed(0);
+
+  let iqCorrect=0;
+  iqIDs.forEach(qid=>{
+    if(answers[qid] && answers[qid].toUpperCase()===correctIQAnswers[qid]) iqCorrect++;
+  });
+// === One-time test lock ===
+if (localStorage.getItem("IntelligenceComplete") === "true") {
+    document.getElementById("rules").style.display = "none";
+    document.getElementById("quiz").style.display = "none";
+    showResults();  // show results immediately
+}
+
 let currentIndex = parseInt(localStorage.getItem("currentIndex")||"0");
 while(currentIndex<questions.length && answers[questions[currentIndex].id]) currentIndex++;
 
 let activeQuestion = null;
 let answeredCurrent = false;
 
-document.getElementById("startTestBtn").addEventListener("click", ()=>{
-  document.getElementById("rules").style.display="none";
-  document.getElementById("quiz").style.display="block";
-  renderQuestion();
-});
+if (localStorage.getItem("IntelligenceComplete") !== "true") {
+    document.getElementById("startTestBtn").addEventListener("click", ()=> {
+        document.getElementById("rules").style.display="none";
+        document.getElementById("quiz").style.display="block";
+
+        // Start at first unanswered question
+        currentIndex = 0;
+        while(currentIndex < questions.length && answers[questions[currentIndex].id]) currentIndex++;
+
+        renderQuestion();
+    });
+} else {
+    // Optional: disable button if already completed
+    document.getElementById("startTestBtn").disabled = true;
+}
+
 
 function renderQuestion(){
   if(currentIndex>=questions.length){ showResults(); return; }
@@ -105,24 +141,7 @@ function handleBlurOrUnload(){
   // Personality questions do nothing
 }
 
-// RESULTS
-function showResults(){
-  document.getElementById("quiz").style.display="none";
-  const r=document.getElementById("results");
-  r.style.display="block";
 
-  const personalityIDs = ["q1","q2","q3","q4","q5","q6","q7","q8"];
-  const iqIDs = ["q9","q10","q11","q12","q13","q14","q15","q16","q17","q18"];
-
-  let sum=0;
-  personalityIDs.forEach(qid=>{ sum += parseInt(answers[qid]||3); });
-  let avg=sum/personalityIDs.length;
-  let opennessPercent=((avg-1)/4*100).toFixed(0);
-
-  let iqCorrect=0;
-  iqIDs.forEach(qid=>{
-    if(answers[qid] && answers[qid].toUpperCase()===correctIQAnswers[qid]) iqCorrect++;
-  });
 
   const userSkill = skillValues.Intelligence;
   const actualPerformance = iqCorrect;
@@ -193,6 +212,7 @@ skillValues.Intelligence = newIntelligence;
         }, { passive: false });
 
 </script>
+
 
 
 
