@@ -846,8 +846,7 @@ if (name.length < 3) {
 
 
   // Redirect
-  window.location.href =
-    "awareness.html";
+  document.dispatchEvent(new CustomEvent("spa-next-page"));
 });
 
 function showError(msg) {
@@ -947,6 +946,7 @@ kvexport();
   
  
 </script>
+
 
 
 
