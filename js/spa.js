@@ -59,6 +59,13 @@ async function loadPageByIndex(index) {
     enableFullscreen();
     currentPageIndex = index;
 
+    // 🔥 REQUIRED FIX — notify fragment it is active
+    document.dispatchEvent(
+      new CustomEvent("spa-page-loaded", {
+        detail: { path, index }
+      })
+    );
+
   } catch (err) {
     console.error(err);
   }
