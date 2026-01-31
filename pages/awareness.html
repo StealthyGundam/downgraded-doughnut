@@ -64,20 +64,25 @@ document.querySelectorAll(".hit").forEach(hit => {
   hit.addEventListener("click", () => {
     const name = hit.dataset.name;
 
-    if (name === order[current]) {
-      alert(`${name} found!`);
-      current++;
-      hit.style.pointerEvents = "none"; // disable once found
-    } else {
-      alert("Wrong Pokémon");
-    }
+    if (name !== order[current]) return;
+
+    // mark text as found
+    const label = document.querySelector(
+      `#pokemon-list span[data-name="${name}"]`
+    );
+    label.classList.add("found");
+
+    // disable hitbox
+    hit.style.pointerEvents = "none";
+
+    current++;
   });
 });
-
 </script>
 </main>
 </body>
 </html>
+
 
 
 
