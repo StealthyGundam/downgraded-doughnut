@@ -30,6 +30,24 @@
   position: absolute;
   cursor: pointer;
 }
+  
+#continueBtn {
+  margin-top: 16px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  color: #fff;
+  cursor: not-allowed;
+  background: #c0392b; /* red */
+  transition: background 0.3s ease;
+}
+
+#continueBtn.enabled {
+  background: #27ae60; /* green */
+  cursor: pointer;
+}
 
 /* Debug outline for testing */
 .hit.debug {
@@ -67,10 +85,14 @@
     <div class="hit mewtwo debug" data-name="Mewtwo"></div>
     <div class="hit seadra debug" data-name="Seadra"></div>
   </div>
+  <button id="continueBtn" disabled> Continue </button>
+
 </section>
 <script>
 const order = ["Bellsprout", "Diglett", "Gloom", "Mewtwo", "Seadra"];
 let current = 0;
+
+const continueBtn = document.getElementById("continueBtn");
 
 document.querySelectorAll(".hit").forEach(hit => {
   hit.addEventListener("click", () => {
@@ -78,22 +100,33 @@ document.querySelectorAll(".hit").forEach(hit => {
 
     if (name !== order[current]) return;
 
-    // mark text as found
-    const label = document.querySelector(
-      `#pokemon-list span[data-name="${name}"]`
-    );
-    label.classList.add("found");
+    // strike through text
+    document
+      .querySelector(`#pokemon-list span[data-name="${name}"]`)
+      .classList.add("found");
 
-    // disable hitbox
     hit.style.pointerEvents = "none";
-
     current++;
+
+    // all found → enable button
+    if (current === order.length) {
+      continueBtn.disabled = false;
+      continueBtn.classList.add("enabled");
+    }
   });
 });
+
+// redirect when enabled
+continueBtn.addEventListener("click", () => {
+  if (continueBtn.disabled) return;
+  window.location.href = "next-page.html";
+});
 </script>
+
 </main>
 </body>
 </html>
+
 
 
 
