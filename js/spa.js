@@ -1,6 +1,5 @@
 // ===== SPA PAGE ORDER =====
 const PAGE_ORDER = [
-  "pages/index.html",
   "pages/start.html",
   "pages/access-code.html",
   "pages/character-creation.html",
