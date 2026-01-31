@@ -8,6 +8,11 @@
 
 <title>Awareness Test</title>
 <style>
+  
+#pokemon-list span.found {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
 
 #Background {
   position: relative;
@@ -47,7 +52,14 @@
 <main>
 <section>
   <h3>Find The Pokemon In Order</h3>
-  <p>Bellsprout, Diglett, Gloom, Mewtwo, Seadra</p>
+<p id="pokemon-list">
+  <span data-name="Bellsprout">Bellsprout</span>,
+  <span data-name="Diglett">Diglett</span>,
+  <span data-name="Gloom">Gloom</span>,
+  <span data-name="Mewtwo">Mewtwo</span>,
+  <span data-name="Seadra">Seadra</span>
+</p>
+
   <div id="Background">
     <div class="hit bellsprout debug" data-name="Bellsprout"></div>
     <div class="hit diglett debug" data-name="Diglett"></div>
@@ -82,6 +94,7 @@ document.querySelectorAll(".hit").forEach(hit => {
 </main>
 </body>
 </html>
+
 
 
 
