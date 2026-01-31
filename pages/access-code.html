@@ -140,7 +140,7 @@
     </div>
 
     <script>
-        const TARGET_URL = "character-creation.html";
+        
         // Auto-redirect if access code already exists
         const savedCode = localStorage.getItem("accessCode");
         if (savedCode) {
@@ -188,7 +188,7 @@
 
 
         function continueToNext() {
-            window.location.href = TARGET_URL;
+            document.dispatchEvent(new CustomEvent("spa-next-page"));
         }
 
 
@@ -244,5 +244,6 @@
     </script>
 
 </html>
+
 
 
