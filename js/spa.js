@@ -40,6 +40,7 @@ async function loadPageByIndex(index) {
     container.innerHTML = html;
 
     // ---- re-execute fragment scripts
+    const scripts = [];
     container.querySelectorAll("script").forEach(oldScript => {
       const newScript = document.createElement("script");
 
@@ -51,19 +52,24 @@ async function loadPageByIndex(index) {
 
       newScript.dataset.spa = "fragment";
       document.body.appendChild(newScript);
-      injectedScripts.push(newScript);
+      scripts.push(newScript);
 
       oldScript.remove();
     });
+    injectedScripts = scripts;
+
+    // ---- wait for all external scripts to load
+    await Promise.all(scripts.map(s => new Promise(r => {
+      if (s.src) s.onload = r;
+      else r();
+    })));
 
     enableFullscreen();
     currentPageIndex = index;
 
-    // 🔥 REQUIRED FIX — notify fragment it is active
+    // 🔥 FIX — notify fragment it is active AFTER scripts loaded
     document.dispatchEvent(
-      new CustomEvent("spa-page-loaded", {
-        detail: { path, index }
-      })
+      new CustomEvent("spa-page-loaded", { detail: { path, index } })
     );
 
   } catch (err) {
