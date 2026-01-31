@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<link rel="stylesheet" href="../css/neon.css">
-<meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luck</title>
+
+<link rel="stylesheet" href="css/neon.css">
 
     <style>
      
@@ -128,9 +123,7 @@
             opacity: 0.9;
         }
     </style>
-</head>
 
-<body>
     <h1>Luck Skill Test</h1>
     <section>
         <h2>Roll a YAHTZEE to pass this skill test!</h2>
@@ -166,7 +159,7 @@
     </section>
     <script>
         function goToNext() {
-            window.location.href = "https://stealthygundam.github.io/symmetrical-pancake/"; // target page
+            document.dispatchEvent(new CustomEvent("spa-next-page"));; // target page
         }
 
 
@@ -333,9 +326,8 @@
             }, 2000);
         }
     </script>
-</body>
 
-</html>
+
 
 
 
