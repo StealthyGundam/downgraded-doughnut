@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport"  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <link rel="stylesheet" href="css/neon.css">
 
-
-<title>Awareness Test</title>
 <style>
   
 #pokemon-list span.found {
@@ -69,8 +63,7 @@
 .seadra     { left: 72.65%; top: 19.23%; width: 11.11%; height: 8.28%; }
 
 </style>
-</head>
-<body>
+
 <h1>Awareness Test</h1>
 <main>
 <section>
@@ -124,13 +117,12 @@ document.querySelectorAll(".hit").forEach(hit => {
 // redirect when enabled
 continueBtn.addEventListener("click", () => {
   if (continueBtn.disabled) return;
-  window.location.href = "next-page.html";
+  document.dispatchEvent(new CustomEvent("spa-next-page"));
 });
 </script>
 
 </main>
-</body>
-</html>
+
 
 
 
