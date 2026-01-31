@@ -142,11 +142,14 @@
     <script>
         
         // Auto-redirect if access code already exists
-        const savedCode = localStorage.getItem("accessCode");
-        if (savedCode) {
-            // Redirect immediately
-            document.dispatchEvent(new CustomEvent("spa-next-page"));
-        }
+ const savedCode = localStorage.getItem("accessCode");
+
+if (savedCode) {
+  requestAnimationFrame(() => {
+    document.dispatchEvent(new CustomEvent("spa-next-page"));
+  });
+}
+
 
 
         const CORRECT_CODE = "705634";
@@ -244,6 +247,7 @@
     </script>
 
 </html>
+
 
 
 
