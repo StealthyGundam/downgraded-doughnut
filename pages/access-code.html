@@ -142,7 +142,7 @@
     <script>
         
         // Auto-redirect if access code already exists
- const savedCode = localStorage.getItem("accessCode");
+var savedCode = localStorage.getItem("accessCode") || "";
 
 if (savedCode) {
   requestAnimationFrame(() => {
@@ -247,6 +247,7 @@ if (savedCode) {
     </script>
 
 </html>
+
 
 
 
