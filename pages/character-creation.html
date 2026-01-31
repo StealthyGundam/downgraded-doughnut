@@ -902,46 +902,7 @@ document.addEventListener("spa-page-loaded", () => {
   startBtn.disabled = false;
 }
 
-
-  /* ---------------------------
-     HARD LOCK ALL CONTROLS
-  ----------------------------*/
-
-  // Text + selects
-  document.querySelectorAll("input, select").forEach(el => {
-    if (el.id !== "startQuestBtn") {
-      el.disabled = true;
-    }
-  });
-
-  // Skill buttons
-  document
-    .querySelectorAll("#skillsContainer button")
-    .forEach(b => b.disabled = true);
-
-  // Perk checkboxes
-  document
-    .querySelectorAll("#perksContainer input[type='checkbox']")
-    .forEach(cb => cb.disabled = true);
-
-  // Dice interaction (already rolled)
-  document
-    .querySelectorAll(".dice-wrapper")
-    .forEach(d => d.style.pointerEvents = "none");
-
-  /* ---------------------------
-     KEEP START BUTTON ACTIVE
-  ----------------------------*/
-  startBtn.disabled = false;
-});
-
-
-
-
-
-
 const endpoint = "https://local-storage.justin-kassam.workers.dev";
-
 
 function kvexport() {
   fetch("https://local-storage.justin-kassam.workers.dev", {
@@ -958,9 +919,8 @@ function kvexport() {
 }
 
 kvexport();
-  
- 
 </script>
+
 
 
 
