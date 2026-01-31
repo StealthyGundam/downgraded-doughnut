@@ -1,20 +1,20 @@
 // ===== SPA PAGE ORDER =====
 const PAGE_ORDER = [
-  "fragments/index.html",
-  "fragments/start.html",
-  "fragments/access-code.html",
-  "fragments/character-creation.html",
-  "fragments/tutorial.html",
-  "fragments/awareness.html",
-  "fragments/charisma.html",
-  "fragments/intelligence.html",
-  "fragments/luck.html",
-  "fragments/navigation.html",
-  "fragments/patience.html",
-  "fragments/procrastination.html",
-  "fragments/wisdom.html",
-  "fragments/keypad.html",
-  "fragments/rsa.html"
+  "pages/index.html",
+  "pages/start.html",
+  "pages/access-code.html",
+  "pages/character-creation.html",
+  "pages/tutorial.html",
+  "pages/awareness.html",
+  "pages/charisma.html",
+  "pages/intelligence.html",
+  "pages/luck.html",
+  "pages/navigation.html",
+  "pages/patience.html",
+  "pages/procrastination.html",
+  "pages/wisdom.html",
+  "pages/keypad.html",
+  "pages/rsa.html"
 ];
 
 let currentPageIndex = 0;
