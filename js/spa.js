@@ -1,4 +1,4 @@
-// ===== SPA PAGE ORDER =====
+// ================= PAGE ORDER =================
 const PAGE_ORDER = [
   "pages/start.html",
   "pages/access-code.html",
@@ -17,12 +17,21 @@ const PAGE_ORDER = [
 ];
 
 let currentPageIndex = 0;
+let injectedScripts = [];
 
-// ===== Load a fragment by index =====
+// ================= LOAD PAGE =================
 async function loadPageByIndex(index) {
   if (index < 0 || index >= PAGE_ORDER.length) return;
 
+  // ---- cleanup old fragment scripts
+  injectedScripts.forEach(script => script.remove());
+  injectedScripts = [];
+
+  // ---- optional fragment cleanup hook
+  document.dispatchEvent(new Event("spa-cleanup"));
+
   const path = PAGE_ORDER[index];
+
   try {
     const res = await fetch(path);
     if (!res.ok) throw new Error(`Failed to load ${path}`);
@@ -31,19 +40,24 @@ async function loadPageByIndex(index) {
     const container = document.getElementById("main-container");
     container.innerHTML = html;
 
-    // Execute scripts inside the fragment
+    // ---- re-execute fragment scripts
     container.querySelectorAll("script").forEach(oldScript => {
       const newScript = document.createElement("script");
-      if (oldScript.src) newScript.src = oldScript.src;
-      else newScript.textContent = oldScript.textContent;
+
+      if (oldScript.src) {
+        newScript.src = oldScript.src;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
+
+      newScript.dataset.spa = "fragment";
       document.body.appendChild(newScript);
-      oldScript.remove(); // optional
+      injectedScripts.push(newScript);
+
+      oldScript.remove();
     });
 
-    // Enable fullscreen (only once)
     enableFullscreen();
-
-    // Update current page index
     currentPageIndex = index;
 
   } catch (err) {
@@ -51,27 +65,29 @@ async function loadPageByIndex(index) {
   }
 }
 
-// ===== Fullscreen handler =====
+// ================= FULLSCREEN =================
 function enableFullscreen() {
-  if (!document.fullscreenElement) {
-    document.addEventListener(
-      "click",
-      () => document.documentElement.requestFullscreen(),
-      { once: true }
-    );
-  }
+  if (document.fullscreenElement) return;
+
+  const handler = async () => {
+    try {
+      await document.documentElement.requestFullscreen();
+    } catch {}
+    document.removeEventListener("click", handler);
+  };
+
+  document.addEventListener("click", handler);
 }
 
-// ===== SPA event listener for fragment-driven Continue buttons =====
+// ================= NAVIGATION EVENT =================
 document.addEventListener("spa-next-page", () => {
-  if (currentPageIndex + 1 < PAGE_ORDER.length) {
-    loadPageByIndex(currentPageIndex + 1);
-  } else {
-    alert("You completed all pages!");
+  const nextIndex = currentPageIndex + 1;
+  if (nextIndex < PAGE_ORDER.length) {
+    loadPageByIndex(nextIndex);
   }
 });
 
-// ===== Start SPA =====
+// ================= START SPA =================
 document.addEventListener("DOMContentLoaded", () => {
-  loadPageByIndex(0); // Start with the first page in PAGE_ORDER
+  loadPageByIndex(0);
 });
