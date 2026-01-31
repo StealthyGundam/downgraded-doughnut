@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LocalStorage Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 2rem;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f0f0;
+      width: 20%;
+    }
+
+    td.value {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: monospace;
+    }
+
+    .controls {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    button {
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+    }
+
+    .empty {
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>LocalStorage Viewer</h1>
+
+  <div class="controls">
+    <button onclick="refresh()">Refresh</button>
+    <button onclick="clearStorage()">Clear LocalStorage</button>
+  </div>
+
+  <table id="storageTable">
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    function refresh() {
+      const tbody = document.querySelector('#storageTable tbody');
+      tbody.innerHTML = '';
+
+      if (localStorage.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 2;
+        cell.className = 'empty';
+        cell.textContent = 'LocalStorage is empty.';
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        return;
+      }
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+
+        const row = document.createElement('tr');
+
+        const keyCell = document.createElement('td');
+        keyCell.textContent = key;
+
+        const valueCell = document.createElement('td');
+        valueCell.className = 'value';
+
+        // Try to pretty-print JSON if possible
+        try {
+          const parsed = JSON.parse(value);
+          valueCell.textContent = JSON.stringify(parsed, null, 2);
+        } catch {
+          valueCell.textContent = value;
+        }
+
+        row.appendChild(keyCell);
+        row.appendChild(valueCell);
+        tbody.appendChild(row);
+      }
+    }
+
+    function clearStorage() {
+      if (confirm('Are you sure you want to clear all localStorage for this origin?')) {
+        localStorage.clear();
+        refresh();
+      }
+    }
+
+    refresh();
+  </script>
+</body>
+</html>
