@@ -32,7 +32,7 @@ async function loadPageByIndex(index) {
   const pageName = getPageNameFromPath(path);
 
   // Skip completed pages BEFORE loading fragment
-  if (localStorage.getItem(`page.${pageName}.completed`) === "true") {
+  if (localStorage.getItem(`pages.${pageName}.completed`) === "true") {
     loadPageByIndex(index + 1);
     return;
   }
