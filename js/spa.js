@@ -33,21 +33,13 @@ async function loadPageByIndex(index) {
 
   // Skip completed pages BEFORE loading fragment
   if (localStorage.getItem(`page.${pageName}.completed`) === "true") {
+    // Recursively skip to next page
     loadPageByIndex(index + 1);
     return;
   }
 
-  // --- only load the page if not completed ---
-  const res = await fetch(path);
-  const html = await res.text();
-  const container = document.getElementById("main-container");
-  container.innerHTML = html;
-
-  // ... re-execute scripts ...
-}
-
-
   try {
+    // Fetch the HTML fragment
     const res = await fetch(path);
     if (!res.ok) throw new Error(`Failed to load ${path}`);
     const html = await res.text();
@@ -119,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ================= OPTIONAL: reset all progress (for testing) =================
-// Usage: call resetAllProgress() in console
 function resetAllProgress() {
   Object.keys(localStorage)
     .filter(k => k.startsWith("page."))
