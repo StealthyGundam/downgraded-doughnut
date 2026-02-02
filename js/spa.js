@@ -19,7 +19,6 @@ let injectedScripts = [];
 
 // ================= SPA HELPER: get page name =================
 function getPageNameFromPath(path) {
-  // Extract file name without extension
   const fileName = path.split("/").pop();
   return fileName.replace(".html", "");
 }
@@ -33,13 +32,11 @@ async function loadPageByIndex(index) {
 
   // Skip completed pages BEFORE loading fragment
   if (localStorage.getItem(`page.${pageName}.completed`) === "true") {
-    // Recursively skip to next page
-    loadPageByIndex(index + 1);
+    await loadPageByIndex(index + 1); // ✅ await recursive call
     return;
   }
 
   try {
-    // Fetch the HTML fragment
     const res = await fetch(path);
     if (!res.ok) throw new Error(`Failed to load ${path}`);
     const html = await res.text();
@@ -110,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadPageByIndex(0);
 });
 
-// ================= OPTIONAL: reset all progress (for testing) =================
+// ================= OPTIONAL: reset all progress =================
 function resetAllProgress() {
   Object.keys(localStorage)
     .filter(k => k.startsWith("page."))
