@@ -88,7 +88,7 @@
 </section>
 <script>
 // === Awareness page entry control ===
-const KEY = "AwarenessComplete";  
+const KEY = "pages.awareness.completed";  
 (() => {
   if (localStorage.getItem(KEY) === "true") {
     document.dispatchEvent(new CustomEvent("spa-next-page"));
@@ -133,6 +133,7 @@ continueBtn.addEventListener("click", () => {
 </script>
 
 </main>
+
 
 
 
