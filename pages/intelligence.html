@@ -14,8 +14,7 @@
 
 <section id="results" style="display:none;"></section>
 
-<script>
-  
+<script>  
 // === Intelligence page entry control ===
 (() => {
   const KEY = "page.intelligence.completed";
@@ -25,185 +24,180 @@
     document.dispatchEvent(new CustomEvent("spa-next-page"));
     return;
   }
-  
-const startBtn = document.getElementById("startTestBtn");
 
-startBtn.addEventListener("click", () => {
-  document.getElementById("rules").style.display = "none";
-  document.getElementById("quiz").style.display = "block";
+  const startBtn = document.getElementById("startTestBtn");
 
-  let currentIndex = 0;
-  while (currentIndex < questions.length && answers[questions[currentIndex].id]) {
+  let skillValues = JSON.parse(
+    localStorage.getItem("skillValues") ||
+      '{"Awareness":6,"Charisma":6,"Intelligence":5,"Luck":10,"Navigation":4,"Patience":7,"Procrastination":5,"Wisdom":2}'
+  );
+
+  let answers = JSON.parse(localStorage.getItem("answers") || "{}");
+
+  const questions = [
+    { id:"q1", type:"personality", text:"I enjoy thinking about abstract ideas that have no immediate practical use.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+    { id:"q2", type:"personality", text:"I often seek out unfamiliar topics just to understand how they work.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+    { id:"q3", type:"personality", text:"I prefer tasks that allow creative freedom over those with strict rules.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+    { id:"q4", type:"personality", text:"I enjoy art, music, or literature that challenges conventional meaning.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+    { id:"q5", type:"personality", text:"I like reconsidering my beliefs when presented with new evidence.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+    { id:"q6", type:"personality", text:"I am comfortable engaging with ideas that contradict my worldview.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+    { id:"q7", type:"personality", text:"I enjoy imagining alternative realities or hypothetical scenarios.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+    { id:"q8", type:"personality", text:"I find learning new skills enjoyable even if they are difficult at first.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
+
+    { id:"q9", type:"iq", text:"If 3 machines make 3 parts in 3 minutes, how long does it take 12 machines to make 12 parts?", options:[{label:"3 minutes",value:"A"},{label:"6 minutes",value:"B"},{label:"9 minutes",value:"C"},{label:"12 minutes",value:"D"},{label:"18 minutes",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q10", type:"iq", text:"(4 x 8) mod 14 =", options:[{label:"0",value:"A"},{label:"7/16",value:"B"},{label:"4",value:"C"},{label:"14",value:"D"},{label:"18",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q11", type:"iq", text:"A fair coin is flipped 5 times and lands heads each time. What is the probability the next flip is heads?", options:[{label:"16.67%",value:"A"},{label:"50.00%",value:"B"},{label:"66.67%",value:"C"},{label:"83.33%",value:"D"},{label:"100.00%",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q12", type:"iq", text:"All whizzies are woozilies. Some woozilies are wonky. Which statement must be true?", options:[{label:"All wonky are whizzies",value:"A"},{label:"Some whizzies are wonky",value:"B"},{label:"Some woozilies may not be wonky",value:"C"},{label:"All woozilies are whizzies",value:"D"},{label:"No wonky are whizzies",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q13", type:"iq", text:"Which word does not belong?", options:[{label:"Gateway",value:"A"},{label:"Router",value:"B"},{label:"Internet",value:"C"},{label:"Switch",value:"D"},{label:"Modem",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q14", type:"iq", text:"How many bits are in a byte", options:[{label:"2",value:"A"},{label:"8",value:"B"},{label:"256",value:"C"},{label:"1000",value:"D"},{label:"They are not even comparable",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q15", type:"iq", text:"A + B = 24, A – B = 16, A / B = ?", options:[{label:"-4",value:"A"},{label:"2.5",value:"B"},{label:"3",value:"C"},{label:"5",value:"D"},{label:"Unsolvable",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q16", type:"iq", text:"What was the name of the first nuclear bomb?", options:[{label:"Fat Man",value:"A"},{label:"Gadget",value:"B"},{label:"Jumbo",value:"C"},{label:"Little Boy",value:"D"},{label:"Thin Man",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q17", type:"iq", text:"Which of the following are not one of the 7 key values of art:", options:[{label:"Color",value:"A"},{label:"Form",value:"B"},{label:"Motion",value:"C"},{label:"Texture",value:"D"},{label:"Value",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
+    { id:"q18", type:"iq", text:"Who invented the modern day cell phone?", options:[{label:"Alexander Bell",value:"A"},{label:"Antonio Meucci",value:"B"},{label:"Joel Engel",value:"C"},{label:"Martin Cooper",value:"D"},{label:"Steven Jobs",value:"E"},{label:"changed tab",value:"F",hidden:true}]}
+  ];
+
+  const correctIQAnswers = {
+    q9:"A",q10:"C",q11:"B",q12:"C",q13:"C",
+    q14:"B",q15:"D",q16:"B",q17:"C",q18:"D"
+  };
+
+  let currentIndex = parseInt(localStorage.getItem("currentIndex") || "0");
+  let activeQuestion = null;
+  let answeredCurrent = false;
+
+  while (currentIndex < questions.length && answers[questions[currentIndex]?.id]) {
     currentIndex++;
   }
 
-  localStorage.setItem("currentIndex", currentIndex);
-  renderQuestion();
-});
-
-  
-let skillValues = JSON.parse(localStorage.getItem("skillValues") || '{"Awareness":6,"Charisma":6,"Intelligence":5,"Luck":10,"Navigation":4,"Patience":7,"Procrastination":5,"Wisdom":2}');
-let answers = JSON.parse(localStorage.getItem("answers") || "{}");
-
-const questions = [
-  // Personality Questions 1-8
-  { id:"q1", type:"personality", text:"I enjoy thinking about abstract ideas that have no immediate practical use.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-  { id:"q2", type:"personality", text:"I often seek out unfamiliar topics just to understand how they work.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-  { id:"q3", type:"personality", text:"I prefer tasks that allow creative freedom over those with strict rules.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-  { id:"q4", type:"personality", text:"I enjoy art, music, or literature that challenges conventional meaning.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-  { id:"q5", type:"personality", text:"I like reconsidering my beliefs when presented with new evidence.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-  { id:"q6", type:"personality", text:"I am comfortable engaging with ideas that contradict my worldview.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-  { id:"q7", type:"personality", text:"I enjoy imagining alternative realities or hypothetical scenarios.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-  { id:"q8", type:"personality", text:"I find learning new skills enjoyable even if they are difficult at first.", options:[{label:"Strongly Disagree",value:1},{label:"Disagree",value:2},{label:"Neutral",value:3},{label:"Agree",value:4},{label:"Strongly Agree",value:5}]},
-
-  // IQ Questions 9-18
-  { id:"q9", type:"iq", text:"If 3 machines make 3 parts in 3 minutes, how long does it take 12 machines to make 12 parts?", options:[{label:"3 minutes",value:"A"},{label:"6 minutes",value:"B"},{label:"9 minutes",value:"C"},{label:"12 minutes",value:"D"},{label:"18 minutes",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q10", type:"iq", text:"(4 x 8) mod 14 =", options:[{label:"0",value:"A"},{label:"7/16",value:"B"},{label:"4",value:"C"},{label:"14",value:"D"},{label:"18",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q11", type:"iq", text:"A fair coin is flipped 5 times and lands heads each time. What is the probability the next flip is heads?", options:[{label:"16.67%",value:"A"},{label:"50.00%",value:"B"},{label:"66.67%",value:"C"},{label:"83.33%",value:"D"},{label:"100.00%",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q12", type:"iq", text:"All whizzies are woozilies. Some woozilies are wonky. Which statement must be true?", options:[{label:"All wonky are whizzies",value:"A"},{label:"Some whizzies are wonky",value:"B"},{label:"Some woozilies may not be wonky",value:"C"},{label:"All woozilies are whizzies",value:"D"},{label:"No wonky are whizzies",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q13", type:"iq", text:"Which word does not belong?", options:[{label:"Gateway",value:"A"},{label:"Router",value:"B"},{label:"Internet",value:"C"},{label:"Switch",value:"D"},{label:"Modem",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q14", type:"iq", text:"How many bits are in a byte", options:[{label:"2",value:"A"},{label:"8",value:"B"},{label:"256",value:"C"},{label:"1000",value:"D"},{label:"They are not even comparable",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q15", type:"iq", text:"A + B = 24, A – B = 16, A / B = ?", options:[{label:"-4",value:"A"},{label:"2.5",value:"B"},{label:"3",value:"C"},{label:"5",value:"D"},{label:"Unsolvable",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q16", type:"iq", text:"What was the name of the first nuclear bomb?", options:[{label:"Fat Man",value:"A"},{label:"Gadget",value:"B"},{label:"Jumbo",value:"C"},{label:"Little Boy",value:"D"},{label:"Thin Man",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q17", type:"iq", text:"Which of the following are not one of the 7 key values of art:", options:[{label:"Color",value:"A"},{label:"Form",value:"B"},{label:"Motion",value:"C"},{label:"Texture",value:"D"},{label:"Value",value:"E"},{label:"changed tab",value:"F",hidden:true}]},
-  { id:"q18", type:"iq", text:"Who invented the modern day cell phone?", options:[{label:"Alexander Bell",value:"A"},{label:"Antonio Meucci",value:"B"},{label:"Joel Engel",value:"C"},{label:"Martin Cooper",value:"D"},{label:"Steven Jobs",value:"E"},{label:"changed tab",value:"F",hidden:true}]}
-];
-
-const correctIQAnswers = {q9:"A",q10:"C",q11:"B",q12:"C",q13:"C",q14:"B",q15:"D",q16:"B",q17:"C",q18:"D"};
-
-// RESULTS
-function showResults(){
-  document.getElementById("quiz").style.display="none";
-  const r=document.getElementById("results");
-  r.style.display="block";
-
-  const personalityIDs = ["q1","q2","q3","q4","q5","q6","q7","q8"];
-  const iqIDs = ["q9","q10","q11","q12","q13","q14","q15","q16","q17","q18"];
-
-  let sum=0;
-  personalityIDs.forEach(qid=>{ sum += parseInt(answers[qid]||3); });
-  let avg=sum/personalityIDs.length;
-  let opennessPercent=((avg-1)/4*100).toFixed(0);
-
-  let iqCorrect=0;
-  iqIDs.forEach(qid=>{
-    if(answers[qid] && answers[qid].toUpperCase()===correctIQAnswers[qid]) iqCorrect++;
-  });
-
-let currentIndex = parseInt(localStorage.getItem("currentIndex")||"0");
-while(currentIndex<questions.length && answers[questions[currentIndex].id]) currentIndex++;
-
-let activeQuestion = null;
-let answeredCurrent = false;
-
-function renderQuestion(){
-  if(currentIndex>=questions.length){ showResults(); return; }
-  const q = questions[currentIndex];
-  activeQuestion=q;
-  answeredCurrent=false;
-
-  document.getElementById("question-text").textContent = q.text;
-  const form = document.getElementById("answers");
-  form.innerHTML="";
-
-  q.options.forEach(opt=>{
-    if(opt.hidden) return;
-    const label = document.createElement("label");
-    const input = document.createElement("input");
-    input.type="radio";
-    input.name=q.id;
-    input.value=opt.value;
-    input.checked = answers[q.id]==opt.value;
-    input.addEventListener("change", ()=>{
-      answeredCurrent=true;
-      answers[q.id]=opt.value;
-      localStorage.setItem("answers",JSON.stringify(answers));
-      currentIndex++;
-      localStorage.setItem("currentIndex",currentIndex);
-      renderQuestion();
-    });
-    label.appendChild(input);
-    label.appendChild(document.createTextNode(" "+opt.label));
-    form.appendChild(label);
-  });
-}
-
-// TAB / REFRESH HANDLING
-window.addEventListener("blur", handleBlurOrUnload);
-window.addEventListener("beforeunload", handleBlurOrUnload);
-
-function handleBlurOrUnload(){
-  if(!activeQuestion || answeredCurrent) return;
-  if(activeQuestion.type==="iq"){
-    answers[activeQuestion.id]="F";
-    localStorage.setItem("answers",JSON.stringify(answers));
-    answeredCurrent=true;
-    currentIndex++;
-    localStorage.setItem("currentIndex",currentIndex);
-    if(document.visibilityState!=="hidden") renderQuestion();
-  }
-  // Personality questions do nothing
-}
-
-
-
-  const userSkill = skillValues.Intelligence;
-  const actualPerformance = iqCorrect;
-  const diff = actualPerformance - userSkill;
-
-  let iqText="";
-  if(diff>=3) iqText="Legendary roll! Your brain is practically a mind flayer. Max potential unlocked!";
-  else if(diff===2) iqText="Nice! Your mental stats are better than you thought. Adventurer-approved.";
-  else if(Math.abs(diff)<=1) iqText="Solid performance. Your self-assigned Intelligence matches your actual skill. Well done!";
-  else if(diff===-2) iqText="Hmm… your wizard thinks he's smarter than he is. Minor miscalculation, but keep trying.";
-  else if(diff<=-3) iqText="Epic fail! You overestimated yourself badly. Even the toaster is laughing.";
-
-
-let additionalPoints = 0;
-if(iqCorrect <= 5) additionalPoints = 0;
-else if(iqCorrect === 6) additionalPoints = 1;
-else if(iqCorrect === 7) additionalPoints = 2;
-else if(iqCorrect === 8) additionalPoints = 3;
-else if(iqCorrect === 9) additionalPoints = 4;
-else if(iqCorrect === 10) skillValues.Intelligence = 10; // max
-
-
-let newIntelligence;
-if(iqCorrect === 10) {
-  newIntelligence = 10;
-  additionalPoints = newIntelligence - userSkill; 
-} else {
-  newIntelligence = userSkill + additionalPoints;
-}
-skillValues.Intelligence = newIntelligence;
-
-  localStorage.setItem("skillValues",JSON.stringify(skillValues));
-  localStorage.setItem("IntelligenceComplete","true");
-
-  r.innerHTML=`
-    <h3>Test Complete</h3>
-    <p><strong>Openness to Experience Questions:</strong><br>
-    Average score: ${avg.toFixed(2)} / 5.00.<br><br>
-    Estimated likelihood of successfully <br>
-    solving complex new idea: ${opennessPercent}%.</p>
-    <p><strong>IQ / Cognitive Reasoning Questions:</strong><br>
-    Correct answers: ${iqCorrect} out of 10.<br><br>
-    ${iqText}<br><br>
-    Initial Intelligence Skill: ${userSkill}<br>
-    New Intelligence Skill: ${skillValues.Intelligence} <br>
-    (additional points: +${additionalPoints})
-<br>
-    <button id="continueBtn">Continue</button>
-  `;
-  document.getElementById("continueBtn").addEventListener("click", ()=>{
-    localStorage.setItem(KEY, "true");
-      document.dispatchEvent(new CustomEvent("spa-next-page"));
+  function renderQuestion() {
+    if (currentIndex >= questions.length) {
+      showResults();
+      return;
     }
+
+    const q = questions[currentIndex];
+    activeQuestion = q;
+    answeredCurrent = false;
+
+    document.getElementById("question-text").textContent = q.text;
+    const form = document.getElementById("answers");
+    form.innerHTML = "";
+
+    q.options.forEach(opt => {
+      if (opt.hidden) return;
+
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+
+      input.type = "radio";
+      input.name = q.id;
+      input.value = opt.value;
+      input.checked = answers[q.id] === opt.value;
+
+      input.addEventListener("change", () => {
+        answeredCurrent = true;
+        answers[q.id] = opt.value;
+        localStorage.setItem("answers", JSON.stringify(answers));
+        currentIndex++;
+        localStorage.setItem("currentIndex", currentIndex);
+        renderQuestion();
+      });
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(" " + opt.label));
+      form.appendChild(label);
+    });
+  }
+
+  function handleBlurOrUnload() {
+    if (!activeQuestion || answeredCurrent) return;
+    if (activeQuestion.type === "iq") {
+      answers[activeQuestion.id] = "F";
+      localStorage.setItem("answers", JSON.stringify(answers));
+      answeredCurrent = true;
+      currentIndex++;
+      localStorage.setItem("currentIndex", currentIndex);
+      if (document.visibilityState !== "hidden") renderQuestion();
+    }
+  }
+
+  window.addEventListener("blur", handleBlurOrUnload);
+  window.addEventListener("beforeunload", handleBlurOrUnload);
+
+  startBtn.addEventListener("click", () => {
+    document.getElementById("rules").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+    renderQuestion();
   });
+
+  function showResults() {
+    document.getElementById("quiz").style.display = "none";
+    const r = document.getElementById("results");
+    r.style.display = "block";
+
+    const personalityIDs = ["q1","q2","q3","q4","q5","q6","q7","q8"];
+    const iqIDs = ["q9","q10","q11","q12","q13","q14","q15","q16","q17","q18"];
+
+    let sum = 0;
+    personalityIDs.forEach(qid => sum += parseInt(answers[qid] || 3));
+    let avg = sum / personalityIDs.length;
+    let opennessPercent = ((avg - 1) / 4 * 100).toFixed(0);
+
+    let iqCorrect = 0;
+    iqIDs.forEach(qid => {
+      if (answers[qid]?.toUpperCase() === correctIQAnswers[qid]) iqCorrect++;
+    });
+
+    const userSkill = skillValues.Intelligence;
+    const diff = iqCorrect - userSkill;
+
+    let iqText = "";
+    if (diff >= 3) iqText = "Legendary roll! Your brain is practically a mind flayer. Max potential unlocked!";
+    else if (diff === 2) iqText = "Nice! Your mental stats are better than you thought. Adventurer-approved.";
+    else if (Math.abs(diff) <= 1) iqText = "Solid performance. Your self-assigned Intelligence matches your actual skill. Well done!";
+    else if (diff === -2) iqText = "Hmm… your wizard thinks he's smarter than he is. Minor miscalculation, but keep trying.";
+    else if (diff <= -3) iqText = "Epic fail! You overestimated yourself badly. Even the toaster is laughing.";
+
+    let additionalPoints = 0;
+    if (iqCorrect <= 5) additionalPoints = 0;
+    else if (iqCorrect === 6) additionalPoints = 1;
+    else if (iqCorrect === 7) additionalPoints = 2;
+    else if (iqCorrect === 8) additionalPoints = 3;
+    else if (iqCorrect === 9) additionalPoints = 4;
+    else if (iqCorrect === 10) skillValues.Intelligence = 10;
+
+    let newIntelligence =
+      iqCorrect === 10 ? 10 : userSkill + additionalPoints;
+
+    skillValues.Intelligence = newIntelligence;
+
+    localStorage.setItem("skillValues", JSON.stringify(skillValues));
+    localStorage.setItem("IntelligenceComplete", "true");
+
+    r.innerHTML = `
+      <h3>Test Complete</h3>
+      <p><strong>Openness to Experience Questions:</strong><br>
+      Average score: ${avg.toFixed(2)} / 5.00.<br><br>
+      Estimated likelihood of successfully <br>
+      solving complex new idea: ${opennessPercent}%.</p>
+      <p><strong>IQ / Cognitive Reasoning Questions:</strong><br>
+      Correct answers: ${iqCorrect} out of 10.<br><br>
+      ${iqText}<br><br>
+      Initial Intelligence Skill: ${userSkill}<br>
+      New Intelligence Skill: ${skillValues.Intelligence} <br>
+      (additional points: +${additionalPoints})
+      <br>
+      <button id="continueBtn">Continue</button>
+    `;
+
+    document.getElementById("continueBtn").addEventListener("click", () => {
+      localStorage.setItem(KEY, "true");
+      document.dispatchEvent(new CustomEvent("spa-next-page"));
+    });
+  }
 
 })();
-
-</script>
+    </script>
 
 
 
