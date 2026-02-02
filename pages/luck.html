@@ -226,13 +226,16 @@
 <script>
     
 (() => {
-  const YAHTZEE_KEY = "LuckStage";
+  const KEY = "LuckStage";
 
   // SPA auto-skip
-  if (localStorage.getItem(YAHTZEE_KEY) === "true") {
+  if (localStorage.getItem(KEY) === "true") {
     document.dispatchEvent(new CustomEvent("spa-next-page"));
     return;
   }
+  function goToNext() {
+  document.dispatchEvent(new CustomEvent("spa-next-page"));
+}
 
   // Wait until dice elements exist (SPA might inject HTML asynchronously)
   function waitForDiceAndInit() {
@@ -270,7 +273,7 @@
     const luckBonus = Math.max(0, luck-3) * 0.01;
 
     // Roll counter
-    let rollCount = parseInt(localStorage.getItem("LuckStageDiceRollsToGetYatzee") || "0", 10);
+    let rollCount = parseInt(localStorage.getItem("LuckStageDiceRollsToGetYahtzee") || "0", 10);
     counterEl.textContent = `Rolls: ${rollCount}`;
 
     // Pip layouts
@@ -316,7 +319,7 @@
       resultEl.textContent = "";
 
       rollCount++;
-      localStorage.setItem("LuckStageDiceRollsToGetYatzee", rollCount);
+      localStorage.setItem("LuckStageDiceRollsToGetYahtzee", rollCount);
       counterEl.textContent = `Rolls: ${rollCount}`;
 
       diceElements.forEach((dice,index)=>{
@@ -340,7 +343,7 @@
         const isYahtzee = values.every(v=>v===values[0]);
         resultEl.textContent = isYahtzee ? "YAHTZEE!" : "Try Again!";
         if(isYahtzee){
-          localStorage.setItem(YAHTZEE_KEY,"true");
+          localStorage.setItem(KEY,"true");
           rollBtn.remove();
           nextBtn.style.display="inline-block";
         } else rollBtn.disabled=false;
@@ -352,5 +355,8 @@
 
   // Initialize once dice exist
   waitForDiceAndInit();
+     nextBtn.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("spa-next-page"));
 })();
 </script>
+
