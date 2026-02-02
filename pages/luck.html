@@ -223,23 +223,25 @@
 
         </div>
     </section>
-   <script>
+  <script>
 function goToNext() {
-    window.location.href = "https://stealthygundam.github.io/symmetrical-pancake/"; 
+    window.location.href = "https://stealthygundam.github.io/symmetrical-pancake/";
 }
 
 const YAHTZEE_KEY = "LuckStage";
 
-// This ensures everything runs **after SPA injects the page HTML**
 document.addEventListener("spa-page-show", () => {
-    const rollBtn = document.getElementById("rollBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const resultEl = document.getElementById("result");
-    const counterEl = document.getElementById("counter");
+    // Get container for this page
+    const page = document.querySelector("#spa-container"); 
+    if (!page) return;
 
-    const yahtzeeAchieved = localStorage.getItem(YAHTZEE_KEY) === "true";
+    const rollBtn = page.querySelector("#rollBtn");
+    const nextBtn = page.querySelector("#nextBtn");
+    const resultEl = page.querySelector("#result");
+    const counterEl = page.querySelector("#counter");
 
-    if (yahtzeeAchieved) {
+    // SPA already stored achievement
+    if (localStorage.getItem(YAHTZEE_KEY) === "true") {
         rollBtn?.remove();
         nextBtn.style.display = "inline-block";
     }
@@ -247,30 +249,29 @@ document.addEventListener("spa-page-show", () => {
     const selectedPerk = localStorage.getItem("selectedPerk");
     const skillValues = JSON.parse(localStorage.getItem("skillValues")) || {};
     const luck = skillValues.Luck || 1;
-
-    const normalizedPerk = selectedPerk?.replace(/[\u2010-\u2015]/g, "-");
-    const hasClover = normalizedPerk === "Seven-Leaf Clover";
+    const hasClover = selectedPerk?.replace(/[\u2010-\u2015]/g, "-") === "Seven-Leaf Clover";
     const luckBonus = Math.max(0, luck - 3) * 0.01;
 
-    let rollCount = parseInt(localStorage.getItem("LuckStageDiceRollsToGetYatzee"), 10) || 0;
+    let rollCount = parseInt(localStorage.getItem("LuckStageDiceRollsToGetYatzee") || "0", 10);
     counterEl.textContent = `Rolls: ${rollCount}`;
 
-    // ----- Build Dice Faces -----
+    // Pip layouts
     const faces = {
         1: [4], 2: [0, 8], 3: [0, 4, 8],
         4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8],
         6: [0, 2, 3, 5, 6, 8]
     };
 
-    const diceElements = document.querySelectorAll('.dice');
+    // Select dice **inside this page**
+    const diceElements = page.querySelectorAll(".dice");
     diceElements.forEach(dice => {
         dice.innerHTML = "";
         for (let i = 1; i <= 6; i++) {
-            const face = document.createElement('div');
+            const face = document.createElement("div");
             face.className = `face face${i}`;
             for (let j = 0; j < 9; j++) {
-                const cell = document.createElement('div');
-                if (faces[i].includes(j)) cell.className = 'pip';
+                const cell = document.createElement("div");
+                if (faces[i].includes(j)) cell.className = "pip";
                 face.appendChild(cell);
             }
             dice.appendChild(face);
@@ -280,22 +281,15 @@ document.addEventListener("spa-page-show", () => {
     const faceRotation = {1:[0,0],2:[0,-90],3:[0,180],4:[0,90],5:[-90,0],6:[90,0]};
 
     function rollDie() {
-        if (!hasClover) return Math.floor(Math.random() * 6) + 1;
+        if (!hasClover) return Math.floor(Math.random()*6)+1;
 
         const weights = [
-            { value:1, weight:12 },
-            { value:2, weight:12 },
-            { value:3, weight:12 },
-            { value:4, weight:12 },
-            { value:5, weight:26 },
-            { value:6, weight:26 }
+            {value:1, weight:12}, {value:2, weight:12}, {value:3, weight:12},
+            {value:4, weight:12}, {value:5, weight:26}, {value:6, weight:26}
         ];
-
-        let total = weights.reduce((sum,w)=>sum+w.weight,0);
-        let roll = Math.random() * total;
-        for (const w of weights) {
-            if ((roll -= w.weight) <= 0) return w.value;
-        }
+        let total = weights.reduce((s,w)=>s+w.weight,0);
+        let roll = Math.random()*total;
+        for (const w of weights) if ((roll-=w.weight)<=0) return w.value;
         return 6;
     }
 
@@ -308,9 +302,9 @@ document.addEventListener("spa-page-show", () => {
         localStorage.setItem("LuckStageDiceRollsToGetYatzee", rollCount);
         counterEl.textContent = `Rolls: ${rollCount}`;
 
-        diceElements.forEach((dice,index) => {
+        diceElements.forEach((dice,index)=>{
             let value = rollDie();
-            if (index > 0 && Math.random() < luckBonus) value = values[0];
+            if (index>0 && Math.random()<luckBonus) value = values[0];
             values.push(value);
 
             const [fx,fy] = faceRotation[value];
@@ -320,7 +314,7 @@ document.addEventListener("spa-page-show", () => {
 
             dice.style.transition = 'none';
             dice.style.transform = 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
-            dice.offsetHeight;
+            dice.offsetHeight; // force reflow
             dice.style.transition = 'transform 2s linear';
             dice.style.transform = `rotateX(${spinsX+fx}deg) rotateY(${spinsY+fy}deg) rotateZ(${spinsZ}deg)`;
         });
@@ -331,7 +325,7 @@ document.addEventListener("spa-page-show", () => {
             if (isYahtzee){
                 localStorage.setItem(YAHTZEE_KEY,"true");
                 rollBtn.remove();
-                nextBtn.style.display="inline-block";
+                nextBtn.style.display = "inline-block";
             } else rollBtn.disabled=false;
         },2000);
     }
