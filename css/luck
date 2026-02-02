@@ -1,0 +1,116 @@
+        /* ---------- Layout ---------- */
+        .dice-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 90px);
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .dice-grid.second {
+            grid-template-columns: repeat(3, 90px);
+            margin-top: 20px;
+        }
+
+        /* ---------- Dice ---------- */
+        .scene {
+            width: 90px;
+            height: 90px;
+            perspective: 1000px;
+        }
+
+        .dice {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s linear;
+            /* Adjusted to 1s for quicker rolls */
+        }
+
+        /* ---------- Faces ---------- */
+        .face {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: #f2f2f2;
+            border-radius: 12px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.15);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .pip {
+            width: 18px;
+            height: 18px;
+            background: #111;
+            border-radius: 50%;
+            align-self: center;
+            justify-self: center;
+        }
+
+        /* ---------- Face Positions ---------- */
+        .face1 {
+            transform: rotateY(0deg) translateZ(45px);
+        }
+
+        .face2 {
+            transform: rotateY(90deg) translateZ(45px);
+        }
+
+        .face3 {
+            transform: rotateY(180deg) translateZ(45px);
+        }
+
+        .face4 {
+            transform: rotateY(-90deg) translateZ(45px);
+        }
+
+        .face5 {
+            transform: rotateX(90deg) translateZ(45px);
+        }
+
+        .face6 {
+            transform: rotateX(-90deg) translateZ(45px);
+        }
+
+        /* ---------- Button ---------- */
+        button {
+            font-family: 'Franklin Gothic Condensed', sans-serif;
+            text-align: center;
+            margin: 20px auto;
+            font-size: 30px;
+            padding: 4px 15px;
+            cursor: pointer;
+            background: #00c853;
+            color: #eee;
+            border: none;
+            border-radius: 5px;
+            text-shadow:
+                0 0 2px #00ffff,
+                0 0 4px #006cffff,
+                0 0 6px #576dc9ff,
+                0 0 8px #ff00f5ff;
+        }
+
+        /* ---------- Result ---------- */
+       #result {
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    min-height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+        /* ---------- Counter ---------- */
+        #counter {
+            margin-top: 10px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
