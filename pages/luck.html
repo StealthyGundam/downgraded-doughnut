@@ -224,12 +224,13 @@
         </div>
     </section>
     <script>
-        function goToNext() {
-            window.location.href = "https://stealthygundam.github.io/symmetrical-pancake/"; // target page
-        }
+    function goToNext() {
+        window.location.href = "https://stealthygundam.github.io/symmetrical-pancake/"; // target page
+    }
 
+    const YAHTZEE_KEY = "LuckStage";
 
-        const YAHTZEE_KEY = "LuckStage";
+    document.addEventListener("spa-page-show", () => {
         const rollBtn = document.getElementById("rollBtn");
         const nextBtn = document.getElementById("nextBtn");
 
@@ -239,20 +240,6 @@
             rollBtn?.remove();
             nextBtn.style.display = "inline-block";
         }
-
-        /* ---------- Prevent Zoom, Drag, Copy/Paste, and Keyboard Actions ---------- */
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('dragstart', e => e.preventDefault());
-        ['copy', 'cut', 'paste'].forEach(ev =>
-            document.addEventListener(ev, e => e.preventDefault())
-        );
-        document.addEventListener('keydown', e => {
-            if ((e.ctrlKey || e.metaKey) &&
-                ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
-        });
-        document.addEventListener('wheel', e => {
-            if (e.ctrlKey) e.preventDefault();
-        }, { passive: false });
 
         /* ---------- Player Data ---------- */
         const selectedPerk = localStorage.getItem("selectedPerk");
@@ -288,6 +275,7 @@
         const diceElements = document.querySelectorAll('.dice');
 
         diceElements.forEach(dice => {
+            dice.innerHTML = ""; // clear previous faces
             for (let i = 1; i <= 6; i++) {
                 const face = document.createElement('div');
                 face.className = `face face${i}`;
@@ -387,8 +375,9 @@
                 } else {
                     button.disabled = false;
                 }
-
-
             }, 2000);
         }
-    </script>
+
+        rollBtn.addEventListener("click", rollDice);
+    });
+</script>
