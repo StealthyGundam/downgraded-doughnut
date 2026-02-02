@@ -26,6 +26,20 @@
     return;
   }
   
+const startBtn = document.getElementById("startTestBtn");
+
+startBtn.addEventListener("click", () => {
+  document.getElementById("rules").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+
+  let currentIndex = 0;
+  while (currentIndex < questions.length && answers[questions[currentIndex].id]) {
+    currentIndex++;
+  }
+
+  localStorage.setItem("currentIndex", currentIndex);
+  renderQuestion();
+});
 
   
 let skillValues = JSON.parse(localStorage.getItem("skillValues") || '{"Awareness":6,"Charisma":6,"Intelligence":5,"Luck":10,"Navigation":4,"Patience":7,"Procrastination":5,"Wisdom":2}');
@@ -81,20 +95,6 @@ while(currentIndex<questions.length && answers[questions[currentIndex].id]) curr
 
 let activeQuestion = null;
 let answeredCurrent = false;
-
-if (localStorage.getItem("page.intelligence.completed") !== "true") {
-    document.getElementById("startTestBtn").addEventListener("click", ()=> {
-        document.getElementById("rules").style.display="none";
-        document.getElementById("quiz").style.display="block";
-
-        // Start at first unanswered question
-        currentIndex = 0;
-        while(currentIndex < questions.length && answers[questions[currentIndex].id]) currentIndex++;
-
-        renderQuestion();
-    });
-}
-
 
 function renderQuestion(){
   if(currentIndex>=questions.length){ showResults(); return; }
@@ -204,6 +204,7 @@ skillValues.Intelligence = newIntelligence;
 })();
 
 </script>
+
 
 
 
