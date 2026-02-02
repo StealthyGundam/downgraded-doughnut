@@ -3,9 +3,7 @@ const PAGE_ORDER = [
   "pages/start.html",
   "pages/access-code.html",
   "pages/character-creation.html",
-  
   "pages/awareness.html",
-
   "pages/intelligence.html",
   "pages/luck.html",
   "pages/navigation.html",
@@ -19,18 +17,26 @@ const PAGE_ORDER = [
 let currentPageIndex = 0;
 let injectedScripts = [];
 
+// ================= SPA HELPER: get page name =================
+function getPageNameFromPath(path) {
+  // Extract file name without extension
+  const fileName = path.split("/").pop();
+  return fileName.replace(".html", "");
+}
+
 // ================= LOAD PAGE =================
 async function loadPageByIndex(index) {
   if (index < 0 || index >= PAGE_ORDER.length) return;
 
-  // ---- cleanup old fragment scripts
-  injectedScripts.forEach(script => script.remove());
-  injectedScripts = [];
-
-  // ---- optional fragment cleanup hook
-  document.dispatchEvent(new Event("spa-cleanup"));
-
   const path = PAGE_ORDER[index];
+  const pageName = getPageNameFromPath(path);
+
+  // ---- auto-skip completed pages
+  if (localStorage.getItem(`page.${pageName}.completed`) === "true") {
+    // Move to next page automatically
+    loadPageByIndex(index + 1);
+    return;
+  }
 
   try {
     const res = await fetch(path);
@@ -39,6 +45,10 @@ async function loadPageByIndex(index) {
 
     const container = document.getElementById("main-container");
     container.innerHTML = html;
+
+    // ---- cleanup old fragment scripts
+    injectedScripts.forEach(script => script.remove());
+    injectedScripts = [];
 
     // ---- re-execute fragment scripts
     container.querySelectorAll("script").forEach(oldScript => {
@@ -60,7 +70,7 @@ async function loadPageByIndex(index) {
     enableFullscreen();
     currentPageIndex = index;
 
-    // 🔹 FIX: dispatch after scripts have been attached and executed
+    // ---- dispatch after scripts attached and executed
     setTimeout(() => {
       document.dispatchEvent(
         new CustomEvent("spa-page-loaded", { detail: { path, index } })
@@ -98,3 +108,12 @@ document.addEventListener("spa-next-page", () => {
 document.addEventListener("DOMContentLoaded", () => {
   loadPageByIndex(0);
 });
+
+// ================= OPTIONAL: reset all progress (for testing) =================
+// Usage: call resetAllProgress() in console
+function resetAllProgress() {
+  Object.keys(localStorage)
+    .filter(k => k.startsWith("page."))
+    .forEach(k => localStorage.removeItem(k));
+  console.log("All puzzle progress reset.");
+}
