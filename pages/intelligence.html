@@ -88,7 +88,7 @@ while(currentIndex<questions.length && answers[questions[currentIndex].id]) curr
 let activeQuestion = null;
 let answeredCurrent = false;
 
-if (localStorage.getItem("IntelligenceComplete") !== "true") {
+if (localStorage.getItem("page.intelligence.completed") !== "true") {
     document.getElementById("startTestBtn").addEventListener("click", ()=> {
         document.getElementById("rules").style.display="none";
         document.getElementById("quiz").style.display="block";
@@ -99,9 +99,6 @@ if (localStorage.getItem("IntelligenceComplete") !== "true") {
 
         renderQuestion();
     });
-} else {
-    // Optional: disable button if already completed
-    document.getElementById("startTestBtn").disabled = true;
 }
 
 
@@ -213,6 +210,7 @@ skillValues.Intelligence = newIntelligence;
 })();
 
 </script>
+
 
 
 
