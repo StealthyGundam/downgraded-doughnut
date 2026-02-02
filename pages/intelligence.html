@@ -75,12 +75,6 @@ function showResults(){
   iqIDs.forEach(qid=>{
     if(answers[qid] && answers[qid].toUpperCase()===correctIQAnswers[qid]) iqCorrect++;
   });
-// === One-time test lock ===
-if (localStorage.getItem("IntelligenceComplete") === "true") {
-    document.getElementById("rules").style.display = "none";
-    document.getElementById("quiz").style.display = "none";
-    showResults();  // show results immediately
-}
 
 let currentIndex = parseInt(localStorage.getItem("currentIndex")||"0");
 while(currentIndex<questions.length && answers[questions[currentIndex].id]) currentIndex++;
@@ -210,6 +204,7 @@ skillValues.Intelligence = newIntelligence;
 })();
 
 </script>
+
 
 
 
