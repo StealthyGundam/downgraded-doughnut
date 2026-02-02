@@ -15,6 +15,23 @@
 <section id="results" style="display:none;"></section>
 
 <script>
+  
+// === Intelligence page entry control ===
+if (localStorage.getItem("IntelligenceContinued") === "true") {
+  // User already continued → skip page entirely
+  document.dispatchEvent(new CustomEvent("spa-next-page"));
+  return;
+}
+if (localStorage.getItem("IntelligenceComplete") === "true") {
+  // Test completed but user did NOT continue yet → show results
+  document.getElementById("rules").style.display = "none";
+  document.getElementById("quiz").style.display = "none";
+  showResults();
+  return;
+}
+  
+
+  
 let skillValues = JSON.parse(localStorage.getItem("skillValues") || '{"Awareness":6,"Charisma":6,"Intelligence":5,"Luck":10,"Navigation":4,"Patience":7,"Procrastination":5,"Wisdom":2}');
 let answers = JSON.parse(localStorage.getItem("answers") || "{}");
 
@@ -192,6 +209,7 @@ skillValues.Intelligence = newIntelligence;
     <button id="continueBtn">Continue</button>
   `;
   document.getElementById("continueBtn").addEventListener("click", ()=>{
+    localStorage.setItem("IntelligenceContinued", "true");
     document.dispatchEvent(new CustomEvent("spa-next-page"));
   });
 }
@@ -212,6 +230,7 @@ skillValues.Intelligence = newIntelligence;
         }, { passive: false });
 
 </script>
+
 
 
 
