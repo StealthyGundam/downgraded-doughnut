@@ -88,11 +88,6 @@
 </section>
 <script>
 // === Awareness page entry control ===
-if (localStorage.getItem("AwarenessContinued") === "true") {
-  // User already continued → skip page entirely
-  document.dispatchEvent(new CustomEvent("spa-next-page"));
-  return;
-}
 
   
 const order = ["Bellsprout", "Diglett", "Gloom", "Mewtwo", "Seadra"];
@@ -131,6 +126,7 @@ continueBtn.addEventListener("click", () => {
 </script>
 
 </main>
+
 
 
 
