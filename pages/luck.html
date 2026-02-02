@@ -297,12 +297,12 @@
         if (!hasClover) return Math.floor(Math.random() * 6) + 1;
 
         const weights = [
-            { value: 1, weight: 12 },
-            { value: 2, weight: 12 },
-            { value: 3, weight: 12 },
-            { value: 4, weight: 12 },
-            { value: 5, weight: 26 },
-            { value: 6, weight: 26 }
+            { value: 1, weight: 10 },
+            { value: 2, weight: 10 },
+            { value: 3, weight: 10 },
+            { value: 4, weight: 10 },
+            { value: 5, weight: 30 },
+            { value: 6, weight: 30 }
         ];
 
         const total = weights.reduce((s, w) => s + w.weight, 0);
@@ -366,4 +366,5 @@
 
 })();
             </script>
+
 
