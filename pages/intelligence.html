@@ -17,18 +17,14 @@
 <script>
   
 // === Intelligence page entry control ===
-if (localStorage.getItem("IntelligenceContinued") === "true") {
-  // User already continued → skip page entirely
-  document.dispatchEvent(new CustomEvent("spa-next-page"));
-  return;
-}
-if (localStorage.getItem("IntelligenceComplete") === "true") {
-  // Test completed but user did NOT continue yet → show results
-  document.getElementById("rules").style.display = "none";
-  document.getElementById("quiz").style.display = "none";
-  showResults();
-  return;
-}
+(() => {
+  const KEY = "page.intelligence.completed";
+
+  // ================= SPA AUTO-SKIP =================
+  if (localStorage.getItem(KEY) === "true") {
+    document.dispatchEvent(new CustomEvent("spa-next-page"));
+    return;
+  }
   
 
   
@@ -209,27 +205,15 @@ skillValues.Intelligence = newIntelligence;
     <button id="continueBtn">Continue</button>
   `;
   document.getElementById("continueBtn").addEventListener("click", ()=>{
-    localStorage.setItem("IntelligenceContinued", "true");
-    document.dispatchEvent(new CustomEvent("spa-next-page"));
+    localStorage.setItem(KEY, "true");
+      document.dispatchEvent(new CustomEvent("spa-next-page"));
+    }
   });
-}
 
-
-/* ---------- Prevent Zoom, Drag, Copy/Paste, and Keyboard Actions ---------- */
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('dragstart', e => e.preventDefault());
-        ['copy', 'cut', 'paste'].forEach(ev =>
-            document.addEventListener(ev, e => e.preventDefault())
-        );
-        document.addEventListener('keydown', e => {
-            if ((e.ctrlKey || e.metaKey) &&
-                ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
-        });
-        document.addEventListener('wheel', e => {
-            if (e.ctrlKey) e.preventDefault();
-        }, { passive: false });
+})();
 
 </script>
+
 
 
 
