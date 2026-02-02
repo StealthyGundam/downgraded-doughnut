@@ -31,12 +31,21 @@ async function loadPageByIndex(index) {
   const path = PAGE_ORDER[index];
   const pageName = getPageNameFromPath(path);
 
-  // ---- auto-skip completed pages
+  // Skip completed pages BEFORE loading fragment
   if (localStorage.getItem(`page.${pageName}.completed`) === "true") {
-    // Move to next page automatically
     loadPageByIndex(index + 1);
     return;
   }
+
+  // --- only load the page if not completed ---
+  const res = await fetch(path);
+  const html = await res.text();
+  const container = document.getElementById("main-container");
+  container.innerHTML = html;
+
+  // ... re-execute scripts ...
+}
+
 
   try {
     const res = await fetch(path);
