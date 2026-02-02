@@ -30,25 +30,28 @@ async function loadPageByIndex(index) {
   const path = PAGE_ORDER[index];
   const pageName = getPageNameFromPath(path);
 
-  // Skip completed pages BEFORE loading fragment
-  if (localStorage.getItem(`page.${pageName}.completed`) === "true") {
-    await loadPageByIndex(index + 1); // ✅ await recursive call
-    return;
-  }
-
   try {
+    // Skip completed pages BEFORE loading fragment
+    if (localStorage.getItem(`page.${pageName}.completed`) === "true") {
+      // Recursively skip to next page
+      await loadPageByIndex(index + 1);
+      return;
+    }
+
+    // Fetch the HTML fragment
     const res = await fetch(path);
     if (!res.ok) throw new Error(`Failed to load ${path}`);
     const html = await res.text();
 
+    // Inject into container
     const container = document.getElementById("main-container");
     container.innerHTML = html;
 
-    // ---- cleanup old fragment scripts
+    // Cleanup old fragment scripts
     injectedScripts.forEach(script => script.remove());
     injectedScripts = [];
 
-    // ---- re-execute fragment scripts
+    // Re-execute fragment scripts
     container.querySelectorAll("script").forEach(oldScript => {
       const newScript = document.createElement("script");
 
@@ -68,7 +71,7 @@ async function loadPageByIndex(index) {
     enableFullscreen();
     currentPageIndex = index;
 
-    // ---- dispatch after scripts attached and executed
+    // Dispatch after scripts attached
     setTimeout(() => {
       document.dispatchEvent(
         new CustomEvent("spa-page-loaded", { detail: { path, index } })
@@ -77,6 +80,8 @@ async function loadPageByIndex(index) {
 
   } catch (err) {
     console.error(err);
+    document.getElementById("main-container").innerHTML =
+      "<h2>Error loading page. See console.</h2>";
   }
 }
 
