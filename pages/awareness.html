@@ -88,7 +88,8 @@
 </section>
 <script>
 // === Awareness page entry control ===
-if (localStorage.getItem("AwarenessContinued") === "true") {
+const KEY = "AwarenessComplete";  
+if (localStorage.getItem("KEY") === "true") {
   // User already continued → skip page entirely
   document.dispatchEvent(new CustomEvent("spa-next-page"));
   return;
@@ -124,12 +125,13 @@ document.querySelectorAll(".hit").forEach(hit => {
 // redirect when enabled
 continueBtn.addEventListener("click", () => {
   if (continueBtn.disabled) return;
-  localStorage.setItem("AwarenessContinued", "true");
+  localStorage.setItem("KEY", "true");
   document.dispatchEvent(new CustomEvent("spa-next-page"));
 });
 </script>
 
 </main>
+
 
 
 
