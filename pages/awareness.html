@@ -89,11 +89,13 @@
 <script>
 // === Awareness page entry control ===
 const KEY = "AwarenessComplete";  
-if (localStorage.getItem(KEY) === "true") {
-  // User already continued → skip page entirely
-  document.dispatchEvent(new CustomEvent("spa-next-page"));
-  return;
-}
+(() => {
+  if (localStorage.getItem(KEY) === "true") {
+    document.dispatchEvent(new CustomEvent("spa-next-page"));
+    return; // ✅ now legal, inside a function
+  }
+})();
+
   
 const order = ["Bellsprout", "Diglett", "Gloom", "Mewtwo", "Seadra"];
 let current = 0;
@@ -131,6 +133,7 @@ continueBtn.addEventListener("click", () => {
 </script>
 
 </main>
+
 
 
 
