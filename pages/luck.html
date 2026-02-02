@@ -1,4 +1,9 @@
-<style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luck</title>
+
+    <style>
         body {
             font-family: 'Compacta', sans-serif;
             font-size: 16px;
@@ -184,7 +189,7 @@
             opacity: 0.9;
         }
     </style>
-
+        
     <h1>Luck Skill Test</h1>
     <section>
         <h2>Roll a YAHTZEE (all dice the same) to pass this skill test!</h2>
@@ -210,7 +215,7 @@
                 </div>
             </div>
             <br>
-            <button id="rollBtn">Roll</button>
+            <button id="rollBtn" onclick="rollDice()">Roll</button>
 
             <div id="result"></div>
             <div id="counter"></div>
@@ -386,9 +391,4 @@
 
             }, 2000);
         }
-      document.getElementById("rollBtn").addEventListener("click", rollDice);
-
     </script>
-
-
-
