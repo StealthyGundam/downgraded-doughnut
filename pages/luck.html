@@ -150,7 +150,7 @@
                 </div>
             </div>
             <br>
-            <button id="rollBtn" onclick="rollDice()">Roll</button>
+            <button id="rollBtn">Roll</button>
 
             <div id="result"></div>
             <div id="counter"></div>
@@ -326,5 +326,8 @@
 
             }, 2000);
         }
+      document.getElementById("rollBtn").addEventListener("click", rollDice);
+
     </script>
+
 
