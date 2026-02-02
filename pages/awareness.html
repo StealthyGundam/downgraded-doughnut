@@ -87,52 +87,51 @@
 
 </section>
 <script>
-// === Awareness page entry control ===
-const KEY = "pages.awareness.completed";  
 (() => {
-  if (localStorage.getItem(KEY) === "true") {
-    document.dispatchEvent(new CustomEvent("spa-next-page"));
-    return; // ✅ now legal, inside a function
-  }
-})();
+  const KEY = "pages.awareness.completed";  
+  const order = ["Bellsprout", "Diglett", "Gloom", "Mewtwo", "Seadra"];
+  let current = 0;
 
-  
-const order = ["Bellsprout", "Diglett", "Gloom", "Mewtwo", "Seadra"];
-let current = 0;
+  const continueBtn = document.getElementById("continueBtn");
 
-const continueBtn = document.getElementById("continueBtn");
+  document.querySelectorAll(".hit").forEach(hit => {
+    hit.addEventListener("click", () => {
+      const name = hit.dataset.name;
 
-document.querySelectorAll(".hit").forEach(hit => {
-  hit.addEventListener("click", () => {
-    const name = hit.dataset.name;
+      // Only allow clicks in the correct order
+      if (name !== order[current]) return;
 
-    if (name !== order[current]) return;
+      // ---- STRIKE THROUGH TEXT ----
+      const textEl = document.querySelector(`#pokemon-list span[data-name="${name}"]`);
+      if (textEl) textEl.classList.add("found");
 
-    // strike through text
-    document
-      .querySelector(`#pokemon-list span[data-name="${name}"]`)
-      .classList.add("found");
+      // Disable hitbox
+      hit.style.pointerEvents = "none";
 
-    hit.style.pointerEvents = "none";
-    current++;
+      // Move to next
+      current++;
 
-    // all found → enable button
-    if (current === order.length) {
-      continueBtn.disabled = false;
-      continueBtn.classList.add("enabled");
-    }
+      // Enable Continue button if all found
+      if (current === order.length) {
+        continueBtn.disabled = false;
+        continueBtn.classList.add("enabled");
+      }
+    });
   });
-});
 
-// redirect when enabled
-continueBtn.addEventListener("click", () => {
-  if (continueBtn.disabled) return;
-  localStorage.setItem(KEY, "true");
-  document.dispatchEvent(new CustomEvent("spa-next-page"));
-});
+  continueBtn.addEventListener("click", () => {
+    if (continueBtn.disabled) return;
+
+    // Mark as completed
+    localStorage.setItem(KEY, "true");
+
+    // Move to next page
+    document.dispatchEvent(new CustomEvent("spa-next-page"));
+  });
+})();
 </script>
-
 </main>
+
 
 
 
