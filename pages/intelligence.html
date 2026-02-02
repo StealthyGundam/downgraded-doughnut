@@ -155,18 +155,30 @@
     else if (diff === -2) iqText = "Hmm… your wizard thinks he's smarter than he is. Minor miscalculation, but keep trying.";
     else if (diff <= -3) iqText = "Epic fail! You overestimated yourself badly. Even the toaster is laughing.";
 
-    let additionalPoints = 0;
-    if (iqCorrect <= 5) additionalPoints = 0;
-    else if (iqCorrect === 6) additionalPoints = 1;
-    else if (iqCorrect === 7) additionalPoints = 2;
-    else if (iqCorrect === 8) additionalPoints = 3;
-    else if (iqCorrect === 9) additionalPoints = 4;
-    else if (iqCorrect === 10) skillValues.Intelligence = 10;
+   let additionalPoints = 0;
+   let newIntelligence;
 
-    let newIntelligence =
-      iqCorrect === 10 ? 10 : userSkill + additionalPoints;
+   if (iqCorrect === 10) {
+  newIntelligence = 10;
+  additionalPoints = newIntelligence - userSkill; 
+} else if (iqCorrect === 9) {
+  additionalPoints = 4;
+  newIntelligence = userSkill + additionalPoints;
+} else if (iqCorrect === 8) {
+  additionalPoints = 3;
+  newIntelligence = userSkill + additionalPoints;
+} else if (iqCorrect === 7) {
+  additionalPoints = 2;
+  newIntelligence = userSkill + additionalPoints;
+} else if (iqCorrect === 6) {
+  additionalPoints = 1;
+  newIntelligence = userSkill + additionalPoints;
+} else {
+  additionalPoints = 0;
+  newIntelligence = userSkill; // no change
+}
 
-    skillValues.Intelligence = newIntelligence;
+skillValues.Intelligence = newIntelligence;
 
     localStorage.setItem("skillValues", JSON.stringify(skillValues));
     localStorage.setItem("IntelligenceComplete", "true");
@@ -195,6 +207,7 @@
 
 })();
     </script>
+
 
 
 
