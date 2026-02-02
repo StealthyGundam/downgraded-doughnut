@@ -170,7 +170,7 @@
         const rollBtn = document.getElementById("rollBtn");
         const nextBtn = document.getElementById("nextBtn");
 
-        const yahtzeeAchieved = localStorage.getItem(YAHTZEE_KEY) === "true";
+        const yahtzeeAchieved = localStorage.getItem(KEY) === "true";
 
         if (yahtzeeAchieved) {
             rollBtn?.remove();
@@ -333,6 +333,7 @@
         }
            })();
     </script>
+
 
 
 
