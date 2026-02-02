@@ -223,161 +223,119 @@
 
         </div>
     </section>
-    <script>
-    function goToNext() {
-        window.location.href = "https://stealthygundam.github.io/symmetrical-pancake/"; // target page
+   <script>
+function goToNext() {
+    window.location.href = "https://stealthygundam.github.io/symmetrical-pancake/"; 
+}
+
+const YAHTZEE_KEY = "LuckStage";
+
+// This ensures everything runs **after SPA injects the page HTML**
+document.addEventListener("spa-page-show", () => {
+    const rollBtn = document.getElementById("rollBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const resultEl = document.getElementById("result");
+    const counterEl = document.getElementById("counter");
+
+    const yahtzeeAchieved = localStorage.getItem(YAHTZEE_KEY) === "true";
+
+    if (yahtzeeAchieved) {
+        rollBtn?.remove();
+        nextBtn.style.display = "inline-block";
     }
 
-    const YAHTZEE_KEY = "LuckStage";
+    const selectedPerk = localStorage.getItem("selectedPerk");
+    const skillValues = JSON.parse(localStorage.getItem("skillValues")) || {};
+    const luck = skillValues.Luck || 1;
 
-    document.addEventListener("spa-page-show", () => {
-        const rollBtn = document.getElementById("rollBtn");
-        const nextBtn = document.getElementById("nextBtn");
+    const normalizedPerk = selectedPerk?.replace(/[\u2010-\u2015]/g, "-");
+    const hasClover = normalizedPerk === "Seven-Leaf Clover";
+    const luckBonus = Math.max(0, luck - 3) * 0.01;
 
-        const yahtzeeAchieved = localStorage.getItem(YAHTZEE_KEY) === "true";
+    let rollCount = parseInt(localStorage.getItem("LuckStageDiceRollsToGetYatzee"), 10) || 0;
+    counterEl.textContent = `Rolls: ${rollCount}`;
 
-        if (yahtzeeAchieved) {
-            rollBtn?.remove();
-            nextBtn.style.display = "inline-block";
+    // ----- Build Dice Faces -----
+    const faces = {
+        1: [4], 2: [0, 8], 3: [0, 4, 8],
+        4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8],
+        6: [0, 2, 3, 5, 6, 8]
+    };
+
+    const diceElements = document.querySelectorAll('.dice');
+    diceElements.forEach(dice => {
+        dice.innerHTML = "";
+        for (let i = 1; i <= 6; i++) {
+            const face = document.createElement('div');
+            face.className = `face face${i}`;
+            for (let j = 0; j < 9; j++) {
+                const cell = document.createElement('div');
+                if (faces[i].includes(j)) cell.className = 'pip';
+                face.appendChild(cell);
+            }
+            dice.appendChild(face);
         }
+    });
 
-        /* ---------- Player Data ---------- */
-        const selectedPerk = localStorage.getItem("selectedPerk");
-        const skillValues = JSON.parse(localStorage.getItem("skillValues")) || {};
-        const luck = skillValues.Luck || 1;
+    const faceRotation = {1:[0,0],2:[0,-90],3:[0,180],4:[0,90],5:[-90,0],6:[90,0]};
 
-        const normalizedPerk = selectedPerk?.replace(/[\u2010-\u2015]/g, "-");
-        const hasClover = normalizedPerk === "Seven-Leaf Clover";
+    function rollDie() {
+        if (!hasClover) return Math.floor(Math.random() * 6) + 1;
 
-        /* ---------- Luck Scaling ---------- */
-        const luckBonus = Math.max(0, luck - 3) * 0.01;
+        const weights = [
+            { value:1, weight:12 },
+            { value:2, weight:12 },
+            { value:3, weight:12 },
+            { value:4, weight:12 },
+            { value:5, weight:26 },
+            { value:6, weight:26 }
+        ];
 
-        /* ---------- Roll Counter ---------- */
-        let rollCount = parseInt(
-            localStorage.getItem("LuckStageDiceRollsToGetYatzee"),
-            10
-        ) || 0;
+        let total = weights.reduce((sum,w)=>sum+w.weight,0);
+        let roll = Math.random() * total;
+        for (const w of weights) {
+            if ((roll -= w.weight) <= 0) return w.value;
+        }
+        return 6;
+    }
 
-        const counterEl = document.getElementById("counter");
+    function rollDice() {
+        const values = [];
+        rollBtn.disabled = true;
+        resultEl.textContent = "";
+
+        rollCount++;
+        localStorage.setItem("LuckStageDiceRollsToGetYatzee", rollCount);
         counterEl.textContent = `Rolls: ${rollCount}`;
 
-        /* ---------- Pip Layouts ---------- */
-        const faces = {
-            1: [4],
-            2: [0, 8],
-            3: [0, 4, 8],
-            4: [0, 2, 6, 8],
-            5: [0, 2, 4, 6, 8],
-            6: [0, 2, 3, 5, 6, 8]
-        };
+        diceElements.forEach((dice,index) => {
+            let value = rollDie();
+            if (index > 0 && Math.random() < luckBonus) value = values[0];
+            values.push(value);
 
-        /* ---------- Build Dice ---------- */
-        const diceElements = document.querySelectorAll('.dice');
+            const [fx,fy] = faceRotation[value];
+            const spinsX = (Math.floor(Math.random()*3)+3)*360;
+            const spinsY = (Math.floor(Math.random()*3)+3)*360;
+            const spinsZ = (Math.floor(Math.random()*2)+1)*360;
 
-        diceElements.forEach(dice => {
-            dice.innerHTML = ""; // clear previous faces
-            for (let i = 1; i <= 6; i++) {
-                const face = document.createElement('div');
-                face.className = `face face${i}`;
-                for (let j = 0; j < 9; j++) {
-                    const cell = document.createElement('div');
-                    if (faces[i].includes(j)) cell.className = 'pip';
-                    face.appendChild(cell);
-                }
-                dice.appendChild(face);
-            }
+            dice.style.transition = 'none';
+            dice.style.transform = 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
+            dice.offsetHeight;
+            dice.style.transition = 'transform 2s linear';
+            dice.style.transform = `rotateX(${spinsX+fx}deg) rotateY(${spinsY+fy}deg) rotateZ(${spinsZ}deg)`;
         });
 
-        /* ---------- Face Rotations ---------- */
-        const faceRotation = {
-            1: [0, 0],
-            2: [0, -90],
-            3: [0, 180],
-            4: [0, 90],
-            5: [-90, 0],
-            6: [90, 0]
-        };
+        setTimeout(()=>{
+            const isYahtzee = values.every(v=>v===values[0]);
+            resultEl.textContent = isYahtzee?"YAHTZEE!":"Try Again!";
+            if (isYahtzee){
+                localStorage.setItem(YAHTZEE_KEY,"true");
+                rollBtn.remove();
+                nextBtn.style.display="inline-block";
+            } else rollBtn.disabled=false;
+        },2000);
+    }
 
-        /* ---------- Weighted Die Roll ---------- */
-        function rollDie() {
-            if (!hasClover) {
-                return Math.floor(Math.random() * 6) + 1;
-            }
-
-            const weights = [
-                { value: 1, weight: 12 },
-                { value: 2, weight: 12 },
-                { value: 3, weight: 12 },
-                { value: 4, weight: 12 },
-                { value: 5, weight: 26 },
-                { value: 6, weight: 26 }
-            ];
-
-            const total = weights.reduce((s, w) => s + w.weight, 0);
-            let roll = Math.random() * total;
-
-            for (const w of weights) {
-                if ((roll -= w.weight) <= 0) return w.value;
-            }
-
-            return 6;
-        }
-
-        /* ---------- Roll Dice + Yahtzee Detection ---------- */
-        function rollDice() {
-            const values = [];
-            const resultEl = document.getElementById("result");
-            const button = document.getElementById("rollBtn");
-
-            button.disabled = true;
-            resultEl.textContent = "";
-
-            rollCount++;
-            localStorage.setItem(
-                "LuckStageDiceRollsToGetYatzee",
-                rollCount
-            );
-            counterEl.textContent = `Rolls: ${rollCount}`;
-
-            diceElements.forEach((dice, index) => {
-                let value = rollDie();
-
-                if (index > 0 && Math.random() < luckBonus) {
-                    value = values[0];
-                }
-
-                values.push(value);
-
-                const [fx, fy] = faceRotation[value];
-                const spinsX = (Math.floor(Math.random() * 3) + 3) * 360;
-                const spinsY = (Math.floor(Math.random() * 3) + 3) * 360;
-                const spinsZ = (Math.floor(Math.random() * 2) + 1) * 360;
-
-                dice.style.transition = 'none';
-                dice.style.transform = 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
-                dice.offsetHeight;
-
-                dice.style.transition = 'transform 2s linear';
-                dice.style.transform =
-                    `rotateX(${spinsX + fx}deg)
-             rotateY(${spinsY + fy}deg)
-             rotateZ(${spinsZ}deg)`;
-            });
-
-            setTimeout(() => {
-                const isYahtzee = values.every(v => v === values[0]);
-                resultEl.textContent = isYahtzee ? "YAHTZEE!" : "Try Again!";
-
-                if (isYahtzee) {
-                    localStorage.setItem(YAHTZEE_KEY, "true");
-                    button.remove(); // completely removes Roll button
-                    document.getElementById("nextBtn").style.display = "inline-block";
-                } else {
-                    button.disabled = false;
-                }
-            }, 2000);
-        }
-
-        rollBtn.addEventListener("click", rollDice);
-    });
+    rollBtn.addEventListener("click", rollDice);
+});
 </script>
