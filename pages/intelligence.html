@@ -28,9 +28,7 @@
   const startBtn = document.getElementById("startTestBtn");
 
   let skillValues = JSON.parse(
-    localStorage.getItem("skillValues") ||
-      '{"Awareness":6,"Charisma":6,"Intelligence":5,"Luck":10,"Navigation":4,"Patience":7,"Procrastination":5,"Wisdom":2}'
-  );
+    localStorage.getItem("skillValues");
 
   let answers = JSON.parse(localStorage.getItem("answers") || "{}");
 
@@ -198,6 +196,7 @@
 
 })();
     </script>
+
 
 
 
