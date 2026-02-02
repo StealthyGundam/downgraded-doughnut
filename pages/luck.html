@@ -157,14 +157,14 @@
     </section>
 <script>
 (() => {
-    const YAHTZEE_KEY = "LuckStage";
+    const KEY = "page.luck.completed";
     const rollBtn = document.getElementById("rollBtn");
     const nextBtn = document.getElementById("nextBtn");
     const resultEl = document.getElementById("result");
     const counterEl = document.getElementById("counter");
 
     // SPA Auto-Skip
-    if (localStorage.getItem(YAHTZEE_KEY) === "true") {
+    if (localStorage.getItem(KEY) === "true") {
         rollBtn?.remove();
         nextBtn.style.display = "inline-block";
     }
@@ -180,7 +180,7 @@
     const luckBonus = Math.max(0, luck - 3) * 0.01;
 
     // Roll Counter
-    let rollCount = parseInt(localStorage.getItem("LuckStageDiceRollsToGetYatzee"), 10) || 0;
+    let rollCount = parseInt(localStorage.getItem("YahtzeeRolls"), 10) || 0;
     counterEl.textContent = `Rolls: ${rollCount}`;
 
     // Dice Faces
@@ -248,7 +248,7 @@
         resultEl.textContent = "";
 
         rollCount++;
-        localStorage.setItem("LuckStageDiceRollsToGetYatzee", rollCount);
+        localStorage.setItem("YahtzeeRolls", rollCount);
         counterEl.textContent = `Rolls: ${rollCount}`;
 
         diceElements.forEach((dice, index) => {
@@ -274,7 +274,7 @@
             resultEl.textContent = isYahtzee ? "YAHTZEE!" : "Try Again!";
 
             if (isYahtzee) {
-                localStorage.setItem(YAHTZEE_KEY, "true");
+                localStorage.setItem(KEY, "true");
                 rollBtn.remove();
                 nextBtn.style.display = "inline-block";
 
@@ -293,6 +293,7 @@
 
 })();
             </script>
+
 
 
 
