@@ -144,7 +144,7 @@
     gameDiv.innerHTML = `<h3>${check.question}</h3>`;
 
     check.options.forEach((opt, i) => {
-      const btn = document.createElement("button");
+      const btn = document.createElement("button2");
       btn.textContent = opt;
       btn.onclick = () => handleChoice(i === check.correct, npc.name, tier);
       gameDiv.appendChild(btn);
