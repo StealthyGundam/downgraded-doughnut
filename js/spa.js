@@ -4,6 +4,7 @@ const PAGE_ORDER = [
   "pages/access-code.html",
   "pages/character-creation.html",
   "pages/awareness.html",
+  "pages/charisma.html",
   "pages/intelligence.html",
   "pages/luck.html",
   "pages/navigation.html",
