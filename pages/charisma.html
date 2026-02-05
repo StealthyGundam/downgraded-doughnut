@@ -5,15 +5,19 @@
 <section>
 <div id="game"></div>
 </section>
-<script>
-const KEY = "page.charisma.completed";  
-const nextBtn = document.getElementById("nextBtn");
-// Load charisma from localStorage or default to 1
-const skillValues = JSON.parse(localStorage.getItem("skillValues")) || {};
-const charisma = skillValues.Charisma || 1;
 
-const npcs = [
-  {
+
+<script>
+(() => {
+  const KEY = "page.charisma.completed";
+  const gameDiv = document.getElementById("game");
+
+  // Load charisma
+  const skillValues = JSON.parse(localStorage.getItem("skillValues")) || {};
+  const charisma = skillValues.Charisma || 1;
+
+  const npcs = [
+    {
     name: "SMEG Vintage Toaster",
     image: "https://cdn.shoplightspeed.com/shops/668880/files/63189824/smeg-4x4-toaster.jpg",
     backstory: "I am a Sally, a vintage toaster, imported, limited color run, and significantly more expensive than I needed to be. People don’t just make toast with me, they display me. I sit on the counter as a statement piece, admired for my curves, my finish, and my flawless aesthetic. Unfortunately, crumbs have accumulated inside me, which is unacceptable at my price point. I am not some budget appliance. I deserve to be clean, inside and out, and I expect solutions that match my level of elegance.",
@@ -56,110 +60,111 @@ const npcs = [
       { question: "How do you use logic?", options: ["Avoid everyone.","Whisper constantly.","Blending in reduces attention.","Move quickly."], correct: 2 },
       { question: "How do you normalize behavior?", options: ["Be invisible.","Rush in and out.","Act like a regular shopper.","Abort."], correct: 2 }
     ]
+  } ];
+
+  let npcIndex = 0;
+  let checkIndex = 0;
+
+  function charismaTier(value) {
+    if (value <= 3) return "low";
+    if (value <= 7) return "mid";
+    return "high";
   }
-];
 
-let npcIndex = 0;
-let checkIndex = 0;
-let gameDiv = document.getElementById("game");
+  function reactionText(npcName, tier, success) {
+    const sarcasticLines = {
+      "SMEG Vintage Toaster": {
+        low: success ? "I suppose even a human can be right sometimes." : "Pathetic attempt. Do try harder.",
+        mid: success ? "Finally, some sense." : "No, that's just not elegant.",
+        high: success ? "Ah, someone appreciates true luxury!" : "Hmm, nearly there, try again."
+      },
+      "Dog": {
+        low: success ? "Well, I guess you know something." : "Try not to ruin the Cheese Tax next time.",
+        mid: success ? "Fine, I'll wait. Don't get used to it." : "Nope, that's not convincing.",
+        high: success ? "Wow, you are wise. I will obey." : "Close, but I still want my treats."
+      },
+      "Dishwasher": {
+        low: success ? "I suppose humans can sometimes instruct me." : "Wrong. I do better alone.",
+        mid: success ? "Accepted." : "That will not work.",
+        high: success ? "Correct, but only a true master could do it." : "Not quite, try again."
+      },
+      "Paranoid Human": {
+        low: success ? "I guess I can tolerate your suggestion." : "No. Too suspicious.",
+        mid: success ? "Hmm, reasonable." : "Not convincing enough.",
+        high: success ? "Yes, you are correct. Move confidently." : "Almost, but still wary."
+      }
+    };
+    return sarcasticLines[npcName][tier];
+  }
 
-function charismaTier(value) {
-  if (value <= 3) return "low";
-  if (value <= 7) return "mid";
-  return "high";
-}
+  function showCharacterIntro() {
+    const npc = npcs[npcIndex];
+    gameDiv.innerHTML = `
+      <h3>${npc.name}</h3>
+      <img class="npc-image" src="${npc.image}">
+      <p>${npc.backstory}</p>
+      <h2 class="goal">Goal: ${npc.goal}</h2>
+      <button id="startBtn">Start Conversation</button>
+    `;
 
-function reactionText(npcName, tier, success) {
-  const sarcasticLines = {
-    "SMEG Vintage Toaster": {
-      low: success ? "I suppose even a human can be right sometimes." : "Pathetic attempt. Do try harder.",
-      mid: success ? "Finally, some sense." : "No, that's just not elegant.",
-      high: success ? "Ah, someone appreciates true luxury!" : "Hmm, nearly there, try again."
-    },
-    "Dog": {
-      low: success ? "Well, I guess you know something." : "Try not to ruin the Cheese Tax next time.",
-      mid: success ? "Fine, I'll wait. Don't get used to it." : "Nope, that's not convincing.",
-      high: success ? "Wow, you are wise. I will obey." : "Close, but I still want my treats."
-    },
-    "Dishwasher": {
-      low: success ? "I suppose humans can sometimes instruct me." : "Wrong. I do better alone.",
-      mid: success ? "Accepted." : "That will not work.",
-      high: success ? "Correct, but only a true master could do it." : "Not quite, try again."
-    },
-    "Paranoid Human": {
-      low: success ? "I guess I can tolerate your suggestion." : "No. Too suspicious.",
-      mid: success ? "Hmm, reasonable." : "Not convincing enough.",
-      high: success ? "Yes, you are correct. Move confidently." : "Almost, but still wary."
-    }
-  };
-  return sarcasticLines[npcName][tier];
-}
+    document.getElementById("startBtn").onclick = startCheck;
+  }
 
-function showCharacterIntro() {
-  const npc = npcs[npcIndex];
-  gameDiv.innerHTML = `
-    <h3>${npc.name}</h3>
-    <img class="npc-image" src="${npc.image}" alt="${npc.name}">
-    <p>${npc.backstory}</p>
-    <h2><p class="goal">Goal: ${npc.goal}</p></h2>
-    <button onclick="startCheck()">Start Conversation</button>
-  `;
-}
+  function startCheck() {
+    checkIndex = 0;
+    renderCheck();
+  }
 
-function startCheck() {
-  checkIndex = 0;
-  renderCheck();
-}
+  function renderCheck() {
+    const npc = npcs[npcIndex];
+    const tier = charismaTier(charisma);
 
-function renderCheck() {
-  const npc = npcs[npcIndex];
-  const tier = charismaTier(charisma);
+    if (checkIndex >= npc.checks.length) {
+      npcIndex++;
 
-  if (checkIndex >= npc.checks.length) {
-    npcIndex++;
-    if (npcIndex >= npcs.length) {
-      gameDiv.innerHTML = `"<h3>Congratulations!</h3><p>You persuaded all NPCs successfully!</p>
-       <button id="nextBtn"> Continue </button>`;
+      if (npcIndex >= npcs.length) {
+        gameDiv.innerHTML = `
+          <h3>Congratulations!</h3>
+          <p>You persuaded all NPCs successfully!</p>
+          <button id="nextBtn">Continue</button>
+        `;
+
+        document.getElementById("nextBtn").onclick = () => {
+          localStorage.setItem(KEY, "true");
+          document.dispatchEvent(new CustomEvent("spa-next-page"));
+        };
+        return;
+      }
+
+      showCharacterIntro();
       return;
     }
-    showCharacterIntro();
-    return;
+
+    const check = npc.checks[checkIndex];
+    gameDiv.innerHTML = `<h3>${check.question}</h3>`;
+
+    check.options.forEach((opt, i) => {
+      const btn = document.createElement("button");
+      btn.textContent = opt;
+      btn.onclick = () => handleChoice(i === check.correct, npc.name, tier);
+      gameDiv.appendChild(btn);
+    });
   }
 
-  const check = npc.checks[checkIndex];
-  gameDiv.innerHTML = `<p><h3>${check.question}<h3></p>`;
-  check.options.forEach((opt, i) => {
-    const btn = document.createElement("button2");
-    btn.textContent = opt;
-    btn.onclick = () => handleChoice(i === check.correct, npc.name, tier);
-    gameDiv.appendChild(btn);
-  });
-}
+  function handleChoice(success, npcName, tier) {
+    gameDiv.innerHTML += `<h3>${reactionText(npcName, tier, success)}</h3>`;
 
-function handleChoice(success, npcName, tier) {
-  const text = reactionText(npcName, tier, success);
-  gameDiv.innerHTML += `<h3>${text}</h3>`;
+    setTimeout(() => {
+      if (success) {
+        checkIndex++;
+        renderCheck();
+      } else {
+        showCharacterIntro();
+      }
+    }, 700);
+  }
 
-  setTimeout(() => {
-    if (success) {
-      checkIndex++;
-      renderCheck();
-    } else {
-      showCharacterIntro();
-    }
-  }, 800);
-}
-
-// Start the game
-showCharacterIntro();
-
-continueBtn.addEventListener("click", () => {
-    if (continueBtn.disabled) return;
-
-    // Mark as completed
-    localStorage.setItem(KEY, "true");
-
-    // Move to next page
-    document.dispatchEvent(new CustomEvent("spa-next-page"));
-  });
+  // Start
+  showCharacterIntro();
+})();
 </script>
