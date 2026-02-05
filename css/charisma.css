@@ -1,0 +1,23 @@
+button2 {
+  display: block;
+  margin: 8px 0;
+  padding: 10px;
+  width: 100%;
+  background: #222;
+  color: #eee;
+  border: 1px solid #444;
+  cursor: pointer;
+}
+button:hover {
+  background: #444;
+}
+
+.npc-image {
+  position: relative;
+  width: 100%;
+  max-width: 410px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 10px;
+}
