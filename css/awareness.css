@@ -1,0 +1,58 @@
+#pokemon-list span.found {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+#Background {
+  position: relative;
+  width: 100%;
+  max-width: 410px;
+  aspect-ratio: 1170 / 1690;
+  background-image: url("assets/pokemon/Main.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 10px;
+}
+
+.hit {
+  position: absolute;
+  cursor: default;
+}
+  
+#continueBtn {
+       font-family: 'Franklin Gothic Condensed', sans-serif;
+       text-align: center;
+       margin: 20px auto;
+       font-size: 30px;
+       padding: 4px 15px;
+       cursor: pointer;
+       background: #c80000;
+       color: #eee;
+       border: none;
+       border-radius: 5px;
+       text-shadow:
+           0 0 2px #00ffff,
+           0 0 4px #006cffff,
+           0 0 6px #576dc9ff,
+           0 0 8px #ff00f5ff;
+   }
+
+#continueBtn.enabled {
+  background: #00c853;
+  cursor: pointer;
+}
+
+/* Debug outline for testing */
+.hit.debug {
+  outline: 2px solid lime;
+  outline-offset: -2px;
+  background: rgba(0, 255, 0, 0.1); /* optional semi-transparent fill */
+}
+
+/* Hitboxes in percentages for scaling */
+.bellsprout { left: 42.74%; top: 34.91%; width: 7.69%; height: 7.99%; }
+.diglett    { left: 9.23%;  top: 40.53%; width: 5.98%; height: 4.14%; }
+.gloom      { left: 14.10%; top: 76.92%; width: 10.26%; height: 5.92%; }
+.mewtwo     { left: 0%;     top: 10.53%; width: 9.40%; height: 12.72%; }
+.seadra     { left: 72.65%; top: 19.23%; width: 11.11%; height: 8.28%; }
