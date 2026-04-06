@@ -7,7 +7,6 @@ const PAGE_ORDER = [
   "pages/charisma.html",
   "pages/intelligence.html",
   "pages/luck.html",
-  "pages/navigation.html",
   "pages/patience.html",
   "pages/procrastination.html",
   "pages/wisdom.html",
