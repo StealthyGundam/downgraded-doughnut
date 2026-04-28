@@ -8,8 +8,6 @@ const PAGE_ORDER = [
   "pages/intelligence.html",
   "pages/luck.html",
   "pages/patience.html",
-  "pages/procrastination.html",
-  "pages/wisdom.html",
   "pages/keypad.html",
   "pages/rsa.html"
 ];
