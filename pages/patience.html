@@ -129,7 +129,13 @@ let stage = 0;
 let timerInterval;
 let realTotalSeconds = 0;
 let fakeTotalSeconds = 0;
+const KEY = "page.intelligence.completed";
 
+  // ================= SPA AUTO-SKIP =================
+  if (localStorage.getItem(KEY) === "true") {
+    document.dispatchEvent(new CustomEvent("spa-next-page"));
+    return;
+  
 // Stage definitions
 const stages = [
   { text: "Do Nothing", realTime: 10, fakeTime: 3*3600 + 45*60 }, // real 3 min, fake 3:45:00
@@ -190,8 +196,13 @@ continueBtn.addEventListener('click', () => {
   startStage();
 });
 
-realContinueBtn.addEventListener('click', () => {
-  window.location.href = "next.html";
+
+ document.getElementById("realContinueBtn").addEventListener("click", () => {
+      localStorage.setItem(KEY, "true");
+      document.dispatchEvent(new CustomEvent("spa-next-page"));
+
+
+  
 });
 
 /* ================================
