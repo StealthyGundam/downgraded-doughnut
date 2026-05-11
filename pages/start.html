@@ -1,3 +1,5 @@
+<audio id="bg-audio" src="assets/sound/Beacon.mp3"></audio>
+
 <link rel="stylesheet" href="css/start.css">
 
   <div id="rules-overlay">
@@ -43,6 +45,13 @@
     document.getElementById("accept-btn").addEventListener("click", () => {
       document.dispatchEvent(new CustomEvent("spa-next-page"));
     });
+
+    window.addEventListener("load", () => {
+    const audio = document.getElementById("bg-audio");
+    audio.play().catch(err => {
+    console.log("Autoplay blocked:", err);
+    });
+  });
   </script>
 
 
