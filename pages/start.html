@@ -1,9 +1,5 @@
 <link rel="stylesheet" href="css/start.css">
 
-
-<audio id="bg-audio" src="assets/sound/Beaconmp3" preload="auto"></audio>
-<audio id="bg-audio" src="assets/sound/Beaconmp3" autoplay ></audio>
-
   <div id="rules-overlay">
     <h2>Project Sundial Access Rules</h2>
 
@@ -36,31 +32,6 @@
   </div>
   
   <script>
-  const audio = document.getElementById("bg-audio");
-
-  // 1. "Silent unlock" attempt (required on mobile browsers)
-  audio.volume = 0;
-
-  function unlockAndPlay() {
-    // restore volume
-    audio.volume = 1;
-
-    // ensure it starts from beginning
-    audio.currentTime = 0;
-
-    // play immediately after first interaction
-    audio.play().catch(err => {
-      console.log("Playback failed:", err);
-    });
-
-    // remove listeners after first trigger
-    document.removeEventListener("touchstart", unlockAndPlay);
-    document.removeEventListener("click", unlockAndPlay);
-  }
-
-  // 2. Wait for ANY user gesture
-  document.addEventListener("touchstart", unlockAndPlay, { once: true });
-  document.addEventListener("click", unlockAndPlay, { once: true });
     // Handle refusal
     document.getElementById("refuse-btn").addEventListener("click", () => {
       localStorage.setItem("refused", "true");
@@ -69,16 +40,9 @@
 
     // Handle acceptance
     document.getElementById("accept-btn").addEventListener("click", () => {
-      document.getElementById("bg-audio").play();
       document.dispatchEvent(new CustomEvent("spa-next-page"));
     });
 
-    window.addEventListener("load", () => {
-    const audio = document.getElementById("bg-audio");
-    audio.play().catch(err => {
-    console.log("Autoplay blocked:", err);
-    });
-  });
   </script>
 
 
