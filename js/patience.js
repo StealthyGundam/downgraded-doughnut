@@ -1,4 +1,5 @@
-let stage = 0;
+(() => {
+  let stage = 0;
 
 let timerInterval;
 
@@ -226,3 +227,4 @@ setInterval(() => {
   }
 
 }, 1000);
+})();
