@@ -9,7 +9,7 @@
   const npcs = [
     {
     name: "SMEG Vintage Toaster",
-    image: "https://stealthygundam.github.io/downgraded-doughnut/assets/characters/toaster.png",
+    image: "https://raw.githubusercontent.com/StealthyGundam/downgraded-doughnut/refs/heads/main/assets/characters/toaster.png",
     backstory: "I am a Sally, a vintage toaster, imported, limited color run, and significantly more expensive than I needed to be. People don’t just make toast with me, they display me. I sit on the counter as a statement piece, admired for my curves, my finish, and my flawless aesthetic. Unfortunately, crumbs have accumulated inside me, which is unacceptable at my price point. I am not some budget appliance. I deserve to be clean, inside and out, and I expect solutions that match my level of elegance.",
     goal: "Convince Sally that toasters and bubble baths are typically not a good combo.",
     checks: [
@@ -20,7 +20,7 @@
   },
   {
     name: "Dog",
-    image: "https://stealthygundam.github.io/downgraded-doughnut/assets/characters/dog.png",
+    image: "https://raw.githubusercontent.com/StealthyGundam/downgraded-doughnut/refs/heads/main/assets/characters/dog.png",
     backstory: "I eat human food because it is better than dog food. I have personally verified this by eating Cheetos, cheesecake, and anything involved in the Cheese Tax. Humans drop food, leave food unattended, or look away from food, and I consider all of these to be permission. I do not understand why they act surprised afterward. If humans can eat it and survive, then I should also be allowed to eat it, preferably immediately and in large quantities.",
     goal: "Convince the dog to wait for a better treat instead of eating everything immediately.",
     checks: [
@@ -42,7 +42,7 @@
   },
   {
     name: "Paranoid Human",
-    image: "https://stealthygundam.github.io/downgraded-doughnut/assets/characters/dude.png",
+    image: "https://raw.githubusercontent.com/StealthyGundam/downgraded-doughnut/refs/heads/main/assets/characters/dude.png",
     backstory: "I enjoy coloring books because they are structured and predictable, but I am careful about how I color. Markers bleed, and bleeding creates patterns, and patterns are how attention is drawn. The government notices patterns. Grocery stores are full of cameras and observers, which is why I avoid them when possible. I try not to stand out, but avoiding attention requires constant vigilance. Even small actions can be misinterpreted if you are not careful.",
     goal: "Convince them to enter the grocery store safely.",
     checks: [
