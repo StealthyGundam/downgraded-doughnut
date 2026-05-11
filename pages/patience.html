@@ -135,7 +135,7 @@ const KEY = "page.intelligence.completed";
   if (localStorage.getItem(KEY) === "true") {
     document.dispatchEvent(new CustomEvent("spa-next-page"));
     return;
-  
+  }
 // Stage definitions
 const stages = [
   { text: "Do Nothing", realTime: 10, fakeTime: 3*3600 + 45*60 }, // real 3 min, fake 3:45:00
