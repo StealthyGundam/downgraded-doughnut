@@ -200,7 +200,7 @@ audio.play().catch(()=>{document.addEventListener("click",()=>audio.play(),{once
 document.body.addEventListener("click",()=>{if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});},{once:true});
 document.addEventListener("contextmenu",e=>e.preventDefault());
 
-const PASSWORD = "800835", MAX_LEN=6, LOCKOUT_DURATION=15;
+const PASSWORD = localStorage.getItem("accessCode"), MAX_LEN=6, LOCKOUT_DURATION=15;
 let input="", lockout=0, cipher=[], cipherCountdown=30;
 
 const o1=document.getElementById("oled1");
