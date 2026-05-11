@@ -200,12 +200,8 @@ audio.play().catch(()=>{document.addEventListener("click",()=>audio.play(),{once
 document.body.addEventListener("click",()=>{if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});},{once:true});
 document.addEventListener("contextmenu",e=>e.preventDefault());
 
-const PASSWORD = localStorage.getItem("accessCode") || "000000", MAX_LEN=6, LOCKOUT_DURATION=15;
-let input="";
-let lockout=0;
-let cipherCountdown=30;
-window.cipher = [];
-
+const PASSWORD = localStorage.getItem("accessCode"), MAX_LEN=6, LOCKOUT_DURATION=15;
+let input="", lockout=0, cipher=[], cipherCountdown=30;
 
 const o1=document.getElementById("oled1");
 const o2=document.getElementById("oled2");
@@ -213,17 +209,7 @@ const o3=document.getElementById("oled3");
 const o4=document.getElementById("oled4");
 const lcdText=document.getElementById("lcdText");
 
-function generateCipher() {
-    const arr = [..."0123456789"];
-
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-
-    window.cipher = arr;
-    cipherCountdown = 30;
-}
+function generateCipher(){ cipher=[..."0123456789"].sort(()=>Math.random()-0.5); cipherCountdown=30; }
 function padZero(n){ return n<10?"0"+n:n; }
 
 // ===== Scaling function for OLED lines
@@ -273,7 +259,7 @@ function flashLine(el){
 
 function updateOLED(){
   o1.innerHTML = `<span style="color: orange; text-shadow: 0 0 2px rgba(255,165,0,0.6),0 0 6px rgba(255,165,0,0.25)">DECIPHER YOUR ACCESS CODE</span>`;
-  o2.innerHTML = `<span style="color: yellow; text-shadow: 0 0 2px rgba(255,255,0,0.6),0 0 6px rgba(255,255,0,0.25)">${window.cipher.join("")}</span>`;
+  o2.innerHTML = `<span style="color: yellow; text-shadow: 0 0 2px rgba(255,255,0,0.6),0 0 6px rgba(255,255,0,0.25)">${cipher.join("")}</span>`;
   o3.innerHTML = `<span style="color: orange; text-shadow: 0 0 2px rgba(255,165,0,0.6),0 0 6px rgba(255,165,0,0.25)">CIPHER WILL CHANGE IN ${padZero(cipherCountdown)} SEC</span>`;
   o4.innerHTML = `<span style="color: red; text-shadow: 0 0 3px rgba(255,0,0,0.7),0 0 8px rgba(255,0,0,0.3)">${lockout>0?`LOCKED OUT: ${padZero(lockout)} SEC`:""}</span>`;
 
@@ -308,7 +294,7 @@ document.querySelectorAll(".key").forEach(btn=>{
     const k=btn.dataset.key;
     if(k==="CLR") input="";
     else if(k==="ENT"){
-      const ciphered=input.split("").map(d=>window.cipher[d]).join("");
+      const ciphered=input.split("").map(d=>cipher[d]).join("");
       if(ciphered===PASSWORD){
         document.body.innerHTML="<h1 style='color:#0f0;font-family:Share Tech Mono'>ACCESS GRANTED</h1>";
         return;
