@@ -227,7 +227,7 @@ const audio=document.getElementById("bg-audio");
 audio.play().catch(()=>{document.addEventListener("click",()=>audio.play(),{once:true});});
 
 document.addEventListener("contextmenu",e=>e.preventDefault());
-
+const KEY = "page.keypad.completed";
 const PASSWORD = localStorage.getItem("accessCode");
 const MAX_LEN=6, LOCKOUT_DURATION=15;
 
@@ -329,8 +329,8 @@ document.querySelectorAll(".key").forEach(btn=>{
     else if(k==="ENT"){
       const ciphered=input.split("").map(d=>cipher[d]).join("");
       if(ciphered===PASSWORD){
-        document.body.innerHTML="<h1 style='color:#0f0;font-family:Share Tech Mono'>ACCESS GRANTED</h1>";
-        return;
+      localStorage.setItem(KEY, "true");
+      document.dispatchEvent(new CustomEvent("spa-next-page"));
       }
       input=""; lockout=LOCKOUT_DURATION;
     } else if(input.length<MAX_LEN) input+=k;
