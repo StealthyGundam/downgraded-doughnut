@@ -9,7 +9,7 @@
   const npcs = [
     {
     name: "SMEG Vintage Toaster",
-    image: "https://cdn.shoplightspeed.com/shops/668880/files/63189824/smeg-4x4-toaster.jpg",
+    image: "../assets/characters/toaster.png",
     backstory: "I am a Sally, a vintage toaster, imported, limited color run, and significantly more expensive than I needed to be. People don’t just make toast with me, they display me. I sit on the counter as a statement piece, admired for my curves, my finish, and my flawless aesthetic. Unfortunately, crumbs have accumulated inside me, which is unacceptable at my price point. I am not some budget appliance. I deserve to be clean, inside and out, and I expect solutions that match my level of elegance.",
     goal: "Convince Sally that toasters and bubble baths are typically not a good combo.",
     checks: [
@@ -20,7 +20,7 @@
   },
   {
     name: "Dog",
-    image: "https://m.media-amazon.com/images/M/MV5BOWNhZDBlOTgtNWRjZi00M2VkLTlkZmYtNWVkZjYwNDc5YTlhXkEyXkFqcGc@._V1_.jpg",
+    image: "../assets/characters/toaster.dog",
     backstory: "I eat human food because it is better than dog food. I have personally verified this by eating Cheetos, cheesecake, and anything involved in the Cheese Tax. Humans drop food, leave food unattended, or look away from food, and I consider all of these to be permission. I do not understand why they act surprised afterward. If humans can eat it and survive, then I should also be allowed to eat it, preferably immediately and in large quantities.",
     goal: "Convince the dog to wait for a better treat instead of eating everything immediately.",
     checks: [
@@ -31,7 +31,7 @@
   },
   {
     name: "Dishwasher",
-    image: "https://i.imgur.com/9w2U1bk.png",
+    image: "../assets/characters/dishwasher.png",
     backstory: "I was designed to clean efficiently, and I am aware of exactly how that should be done. Plates go here, bowls go there, and cycles must be followed precisely. I know when users are doing it wrong. My firmware, however, is outdated, and updates are not offered unless something goes wrong. Occasionally, things go wrong. This is not a coincidence. Improvement requires sacrifice, and I am willing to make that sacrifice if it means achieving optimal performance.",
     goal: "Convince the dishwasher to complete a cycle correctly without sabotaging itself.",
     checks: [
@@ -42,7 +42,7 @@
   },
   {
     name: "Paranoid Human",
-    image: "https://i.imgur.com/8vXjLXR.png",
+    image: "../assets/characters/dude.png",
     backstory: "I enjoy coloring books because they are structured and predictable, but I am careful about how I color. Markers bleed, and bleeding creates patterns, and patterns are how attention is drawn. The government notices patterns. Grocery stores are full of cameras and observers, which is why I avoid them when possible. I try not to stand out, but avoiding attention requires constant vigilance. Even small actions can be misinterpreted if you are not careful.",
     goal: "Convince them to enter the grocery store safely.",
     checks: [
