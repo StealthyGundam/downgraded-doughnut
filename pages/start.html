@@ -41,6 +41,7 @@
 
     // Handle acceptance
     document.getElementById("accept-btn").addEventListener("click", () => {
+      document.getElementById("bg-audio").play();
       document.dispatchEvent(new CustomEvent("spa-next-page"));
     });
 
